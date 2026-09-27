@@ -1,0 +1,92 @@
+<Window x:Class="UP01_Chernenkaya_Book.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Сервис бронирования гостиниц и апартаментов" 
+        Height="780" Width="1180" MinHeight="650" MinWidth="950"
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing">
+    <Grid Background="{DynamicResource BackgroundColor}">
+        <Grid.RowDefinitions>
+            <!-- Шаг 2: Высота 45 для верхней панели -->
+            <RowDefinition Height="45" />
+            <!-- Центральная рабочая область -->
+            <RowDefinition Height="*" />
+            <!-- Шаг 2: Высота 45 для нижней панели -->
+            <RowDefinition Height="45" />
+        </Grid.RowDefinitions>
+
+        <!-- Шапка окна (Top Bar) -->
+        <Border Grid.Row="0" Background="{DynamicResource HeaderFooterBarColor}" Padding="10,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Левая часть: Кнопка Назад, Логотип, Название -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="BtnBack" Content="← Назад" 
+                            Width="85" Height="30" Margin="0,0,12,0" 
+                            FontSize="12" MinWidth="70"
+                            Visibility="Collapsed" 
+                            Click="BtnBack_Click" 
+                            ToolTip="Вернуться на предыдущую страницу" />
+
+                    <Image Source="/res/app_logo.png" Height="30" Width="30" Margin="0,0,10,0" VerticalAlignment="Center" />
+
+                    <TextBlock Text="СЕРВИС БРОНИРОВАНИЯ ГОСТИНИЦ И АПАРТАМЕНТОВ" 
+                               Foreground="#FFFFFF" FontWeight="Bold" FontSize="14" 
+                               VerticalAlignment="Center" />
+                </StackPanel>
+
+                <!-- Правая часть: Пользователь и переключатель тем (Шаг 3) -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock x:Name="TxtCurrentUser" 
+                               Text="Гость" Foreground="#FFFFFF" 
+                               FontSize="12" VerticalAlignment="Center" Margin="0,0,15,0" />
+
+                    <Button x:Name="BtnLogout" Content="Выйти" 
+                            Width="75" Height="28" MinWidth="60" Margin="0,0,15,0"
+                            FontSize="11" Background="{DynamicResource DangerColor}" 
+                            Visibility="Collapsed"
+                            Click="BtnLogout_Click" />
+
+                    <TextBlock Text="Тема:" Foreground="#FFFFFF" FontSize="12" 
+                               VerticalAlignment="Center" Margin="0,0,6,0" />
+
+                    <ComboBox x:Name="CmbTheme" Width="135" Height="28" 
+                              SelectionChanged="CmbTheme_SelectionChanged" 
+                              VerticalAlignment="Center">
+                        <ComboBoxItem Content="Фирменная" IsSelected="True" />
+                        <ComboBoxItem Content="Тёмная" />
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Центральный навигационный контейнер (Шаг 2) -->
+        <Frame x:Name="MainFrame" Grid.Row="1" 
+               NavigationUIVisibility="Hidden" 
+               Navigated="MainFrame_Navigated" />
+
+        <!-- Подвал окна (Bottom Bar) с таймером (Шаг 2) -->
+        <Border Grid.Row="2" Background="{DynamicResource HeaderFooterBarColor}" Padding="15,0">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" 
+                           Text="© 2026 Сервис бронирования | Студентка: Черненькая В.В. (группа 4ИСИП-523)" 
+                           Foreground="#FFFFFF" FontSize="12" VerticalAlignment="Center" />
+
+                <!-- Шаг 2: Таймер даты и времени -->
+                <TextBlock x:Name="TxtClock" Grid.Column="1" 
+                           Foreground="#FFFFFF" FontWeight="SemiBold" FontSize="12" 
+                           VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
