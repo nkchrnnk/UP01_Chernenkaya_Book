@@ -1,0 +1,108 @@
+﻿<Page x:Class="UP01_Chernenkaya_Book.Pages.RoomsTabPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Управление номерным фондом">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Background="{DynamicResource SurfaceColor}"
+                BorderBrush="{DynamicResource BorderBrushColor}"
+                BorderThickness="1" CornerRadius="8"
+                Padding="15,10" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <WrapPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Поиск:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold" 
+                               Foreground="{DynamicResource TextColor}" />
+                    <TextBox x:Name="TxtSearch" Width="180" Height="32" Margin="0,0,15,0"
+                             ToolTip="Поиск по номеру комнаты или категории" 
+                             TextChanged="FilterChanged" />
+
+                    <TextBlock Text="Отель:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="SemiBold" 
+                               Foreground="{DynamicResource TextColor}" />
+                    <ComboBox x:Name="CmbHotelFilter" Width="200" Height="32" Margin="0,0,15,0"
+                              ToolTip="Фильтрация по объекту размещения"
+                              SelectionChanged="FilterChanged" />
+
+                    <Button x:Name="BtnAddRoom" Content="+ Добавить номер" 
+                            Height="32" MinWidth="140" Margin="0,0,10,0"
+                            Click="BtnAddRoom_Click" />
+                </WrapPanel>
+
+                <Button Grid.Column="1" Content="← В меню админа" 
+                        Height="32" MinWidth="130"
+                        Background="{DynamicResource SurfaceColor}"
+                        Foreground="{DynamicResource TextColor}"
+                        BorderBrush="{DynamicResource BorderBrushColor}"
+                        BorderThickness="1"
+                        Click="BtnBackToHub_Click" />
+            </Grid>
+        </Border>
+
+                <DataGrid x:Name="DgRooms" Grid.Row="1"
+                  AutoGenerateColumns="False" CanUserAddRows="False"
+                  IsReadOnly="True" SelectionMode="Single"
+                  Background="{DynamicResource SurfaceColor}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding RoomId}" Width="50" />
+                <DataGridTextColumn Header="Номер" Binding="{Binding RoomNumber}" Width="90" FontWeight="SemiBold" />
+                <DataGridTextColumn Header="Объект размещения" Binding="{Binding Accommodation.Name}" Width="230" />
+                <DataGridTextColumn Header="Этаж" Binding="{Binding Floor}" Width="70" />
+                <DataGridTextColumn Header="Категория" Binding="{Binding RoomType}" Width="190" />
+                <DataGridTextColumn Header="Вместимость" Binding="{Binding Capacity, StringFormat='{}{0} чел.'}" Width="110" />
+                <DataGridTextColumn Header="Стоимость" Binding="{Binding PricePerNight, StringFormat='{}{0:N0} ₽/сут.'}" Width="120" />
+                
+                <DataGridTemplateColumn Header="Доступность" Width="110">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="SemiBold">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="Занят" />
+                                        <Setter Property="Foreground" Value="{DynamicResource DangerColor}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsAvailable}" Value="True">
+                                                <Setter Property="Text" Value="Свободен" />
+                                                <Setter Property="Foreground" Value="#2A9D8F" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Действия" Width="180">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Content="Изменить" Height="26" MinWidth="75" Margin="2,0" FontSize="11"
+                                        Click="BtnEdit_Click" />
+                                <Button Content="Удалить" Height="26" MinWidth="70" Margin="2,0" FontSize="11"
+                                        Background="{DynamicResource DangerColor}"
+                                        Click="BtnDelete_Click" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+                <Border Grid.Row="2" Background="{DynamicResource SurfaceColor}"
+                BorderBrush="{DynamicResource BorderBrushColor}"
+                BorderThickness="1" CornerRadius="6"
+                Padding="12,8" Margin="0,10,0,0">
+            <TextBlock x:Name="TxtStatus" Text="Всего номеров в базе: 0" 
+                       Foreground="{DynamicResource TextColor}" FontWeight="SemiBold" FontSize="12" />
+        </Border>
+    </Grid>
+</Page>
