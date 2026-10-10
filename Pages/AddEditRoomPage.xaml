@@ -1,0 +1,96 @@
+<Page x:Class="UP01_Chernenkaya_Book.Pages.AddEditRoomPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Редактирование номера">
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Border Background="{DynamicResource SurfaceColor}"
+                    BorderBrush="{DynamicResource BorderBrushColor}"
+                    BorderThickness="1" CornerRadius="12"
+                    MaxWidth="520" Margin="20,30" Padding="35"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel>
+                    <!-- Заголовок формы -->
+                    <TextBlock x:Name="TxtTitle" Text="ДОБАВЛЕНИЕ НОМЕРА" 
+                               FontSize="18" FontWeight="Bold" 
+                               Foreground="{DynamicResource TextColor}" 
+                               HorizontalAlignment="Center" Margin="0,0,0,5" />
+
+                    <TextBlock Text="Параметры единицы номерного фонда объекта размещения" 
+                               FontSize="12" Foreground="{DynamicResource MutedTextColor}" 
+                               HorizontalAlignment="Center" Margin="0,0,0,20" />
+
+                    <!-- Объект размещения (Отель) -->
+                    <TextBlock Text="Объект размещения (отель / апартаменты):" FontWeight="SemiBold" 
+                               Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                    <ComboBox x:Name="CmbHotel" Height="34" Margin="0,0,0,12"
+                              DisplayMemberPath="Name" SelectedValuePath="AccommodationId" />
+
+                    <!-- Номер комнаты и Этаж -->
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="15" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Номер комнаты / ап.:" FontWeight="SemiBold" 
+                                       Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                            <TextBox x:Name="TxtRoomNumber" Height="34" ToolTip="Например: 101, 205, А-2" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Этаж расположения:" FontWeight="SemiBold" 
+                                       Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                            <TextBox x:Name="TxtFloor" Height="34" ToolTip="Этаж (1, 2, 3...)" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Категория номера -->
+                    <TextBlock Text="Категория номера (тип):" FontWeight="SemiBold" 
+                               Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                    <TextBox x:Name="TxtRoomType" Height="34" Margin="0,0,0,12"
+                             ToolTip="Например: Стандарт Double, Делюкс, Люкс с балконом" />
+
+                    <!-- Вместимость и Стоимость -->
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="15" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Вместимость (чел.):" FontWeight="SemiBold" 
+                                       Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                            <TextBox x:Name="TxtCapacity" Height="34" ToolTip="Количество спальных мест" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Цена за сутки (₽):" FontWeight="SemiBold" 
+                                       Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                            <TextBox x:Name="TxtPrice" Height="34" ToolTip="Стоимость суток проживания" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Статус доступности -->
+                    <CheckBox x:Name="ChkIsAvailable" Content="Номер свободен и доступен для онлайн-бронирования" 
+                              IsChecked="True" FontSize="13" FontWeight="SemiBold" 
+                              Foreground="{DynamicResource TextColor}" Margin="0,0,0,20" />
+
+                    <!-- Кнопки -->
+                    <Button x:Name="BtnSave" Content="Сохранить номер" 
+                            Height="40" Margin="0,0,0,10" 
+                            Click="BtnSave_Click" />
+
+                    <Button Content="Отмена и назад" 
+                            Height="34" Margin="0"
+                            Background="Transparent" Foreground="{DynamicResource MutedTextColor}"
+                            BorderThickness="0"
+                            Click="BtnCancel_Click" />
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+    </Grid>
+</Page>
