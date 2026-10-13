@@ -1,0 +1,97 @@
+<Page x:Class="UP01_Chernenkaya_Book.Pages.AnalyticsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:UP01_Chernenkaya_Book.Pages"
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      mc:Ignorable="d" 
+      d:DesignHeight="650" d:DesignWidth="1000"
+      Title="Аналитика и отчетность">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="Auto" />
+
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{DynamicResource SurfaceColor}"
+                BorderBrush="{DynamicResource BorderBrushColor}"
+                BorderThickness="1" CornerRadius="8"
+                Padding="15,10" Margin="0,0,0,15">
+            <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                <TextBlock Text="Аналитический срез:" VerticalAlignment="Center" Margin="5,0" FontWeight="SemiBold" 
+                           Foreground="{DynamicResource TextColor}" />
+                <ComboBox x:Name="CmbMetric" Width="240" Height="32" Margin="5,0,15,0"
+                          ToolTip="Выберите аналитическую метрику для построения графика"
+                          SelectionChanged="UpdateChart">
+                    <ComboBoxItem Content="Бронирования по типам жилья" IsSelected="True" />
+                    <ComboBoxItem Content="Бронирования по городам" />
+                    <ComboBoxItem Content="Выручка по городам (₽)" />
+                </ComboBox>
+
+                <TextBlock Text="Вид диаграммы:" VerticalAlignment="Center" Margin="5,0" FontWeight="SemiBold" 
+                           Foreground="{DynamicResource TextColor}" />
+                <ComboBox x:Name="CmbChartType" Width="190" Height="32" Margin="5,0,20,0"
+                          ToolTip="Выберите вид графического отображения"
+                          SelectionChanged="UpdateChart">
+                    <ComboBoxItem Content="Столбчатая (Column)" IsSelected="True" />
+                    <ComboBoxItem Content="Круговая (Pie)" />
+                    <ComboBoxItem Content="Линейная (Line)" />
+                </ComboBox>
+
+                <Button x:Name="BtnExportExcel" Content="Экспорт в Excel (.xlsx)" 
+                        Height="32" MinWidth="145" Margin="5,4"
+                        Background="#107C41" Foreground="#FFFFFF"
+                        ToolTip="Сформировать детальную аналитическую книгу Excel с формулами"
+                        Click="BtnExportExcel_Click" />
+
+                <Button x:Name="BtnExportWord" Content="Экспорт в Word (.docx)" 
+                        Height="32" MinWidth="145" Margin="5,4"
+                        Background="#2B579A" Foreground="#FFFFFF"
+                        ToolTip="Сформировать аналитическую записку в формате Microsoft Word"
+                        Click="BtnExportWord_Click" />
+
+                <Button x:Name="BtnExportPdf" Content="Экспорт в PDF (.pdf)" 
+                        Height="32" MinWidth="140" Margin="5,4"
+                        Background="{DynamicResource DangerColor}" Foreground="#FFFFFF"
+                        ToolTip="Сформировать официальный отчет в формате PDF"
+                        Click="BtnExportPdf_Click" />
+
+                <Button Content="← Назад" Height="32" MinWidth="85" Margin="10,4,0,4"
+                        Background="{DynamicResource SurfaceColor}"
+                        Foreground="{DynamicResource TextColor}"
+                        BorderBrush="{DynamicResource BorderBrushColor}"
+                        BorderThickness="1"
+                        Click="BtnBack_Click" />
+            </WrapPanel>
+        </Border>
+
+        <Border Grid.Row="1" Background="{DynamicResource SurfaceColor}"
+                BorderBrush="{DynamicResource BorderBrushColor}"
+                BorderThickness="1" CornerRadius="8" Padding="20">
+            <Grid>
+
+                <lvc:CartesianChart x:Name="CartesianChartControl" Visibility="Visible" LegendLocation="Top">
+                    <lvc:CartesianChart.ChartLegend>
+                        <lvc:DefaultLegend Foreground="{DynamicResource TextColor}" />
+                    </lvc:CartesianChart.ChartLegend>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis x:Name="AxisX" Title="Категории / Города" Foreground="{DynamicResource TextColor}" />
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis x:Name="AxisY" Title="Количество" Foreground="{DynamicResource TextColor}" MinValue="0" />
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+
+                <lvc:PieChart x:Name="PieChartControl" Visibility="Collapsed" LegendLocation="Right">
+                    <lvc:PieChart.ChartLegend>
+                        <lvc:DefaultLegend Foreground="{DynamicResource TextColor}" />
+                    </lvc:PieChart.ChartLegend>
+                </lvc:PieChart>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>
