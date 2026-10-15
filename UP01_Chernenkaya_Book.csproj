@@ -7,6 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationTitle>Сервис бронирования гостиниц и апартаментов</ApplicationTitle>
+    <ApplicationIcon>res\app.ico</ApplicationIcon>
+    <NuGetAudit>false</NuGetAudit>
   </PropertyGroup>
 
   <ItemGroup>

@@ -71,7 +71,7 @@
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsAvailable}" Value="True">
                                                 <Setter Property="Text" Value="Свободен" />
-                                                <Setter Property="Foreground" Value="#2A9D8F" />
+                                                <Setter Property="Foreground" Value="#10B981" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>

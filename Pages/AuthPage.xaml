@@ -33,11 +33,11 @@
                         <TextBlock Text="Защитный код подтверждения (Капча):" 
                                    FontWeight="SemiBold" Foreground="{DynamicResource DangerColor}" Margin="0,0,0,5" />
 
-                        <Border Background="#E8F4F8" BorderBrush="{DynamicResource PrimaryColor}" 
+                        <Border Background="{DynamicResource BackgroundColor}" BorderBrush="{DynamicResource PrimaryColor}" 
                                 BorderThickness="1" CornerRadius="6" Height="45" Margin="0,0,0,10">
                             <Grid>
-                                                                <Line X1="10" Y1="10" X2="280" Y2="35" Stroke="#CBD3DC" StrokeThickness="2" />
-                                <Line X1="30" Y1="38" X2="290" Y2="12" Stroke="#A0C4D8" StrokeThickness="1.5" />
+                                                                <Line X1="10" Y1="10" X2="280" Y2="35" Stroke="{DynamicResource BorderBrushColor}" StrokeThickness="2" />
+                                <Line X1="30" Y1="38" X2="290" Y2="12" Stroke="{DynamicResource PrimaryColor}" Opacity="0.6" StrokeThickness="1.5" />
                                 <TextBlock x:Name="TxtCaptchaCode" 
                                            Text="A7X9" FontSize="24" FontWeight="Bold" 
                                            FontStyle="Italic" Foreground="{DynamicResource PrimaryDarkColor}" 
