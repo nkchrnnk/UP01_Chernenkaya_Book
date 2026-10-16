@@ -2,126 +2,123 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Панель администратора">
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" Background="{DynamicResource SurfaceColor}"
-                BorderBrush="{DynamicResource BorderBrushColor}"
-                BorderThickness="1" CornerRadius="8" Padding="20,15" Margin="0,0,0,15">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+                        <Border Grid.Row="0" Background="{DynamicResource SurfaceColor}"
+                    BorderBrush="{DynamicResource BorderBrushColor}"
+                    BorderThickness="1" CornerRadius="8" Padding="20,15" Margin="0,0,0,15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="ПАНЕЛЬ УПРАВЛЕНИЯ СЕРВИСОМ БРОНИРОВАНИЯ" 
-                               FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextColor}" />
-                    <TextBlock x:Name="TxtAdminSubtitle" 
-                               Text="Администратор: Черненькая В.В. | Полный доступ ко всем модулям системы" 
-                               FontSize="12" Foreground="{DynamicResource MutedTextColor}" Margin="0,4,0,0" />
-                </StackPanel>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="ПАНЕЛЬ УПРАВЛЕНИЯ СЕРВИСОМ БРОНИРОВАНИЯ" 
+                                   FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextColor}" />
+                        <TextBlock x:Name="TxtAdminSubtitle" 
+                                   Text="Администратор: Черненькая В.В. | Полный доступ ко всем модулям системы" 
+                                   FontSize="12" Foreground="{DynamicResource MutedTextColor}" Margin="0,4,0,0" />
+                    </StackPanel>
 
-                <Button Grid.Column="1" Content="Витрина каталога" 
-                        Height="34" MinWidth="140"
-                        Background="{DynamicResource PrimaryColor}"
-                        Foreground="#FFFFFF"
-                        Click="BtnGoToCatalog_Click" />
-            </Grid>
-        </Border>
-
-                <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,15">
-                        <Border Background="{DynamicResource SurfaceColor}" BorderBrush="{DynamicResource BorderBrushColor}" 
-                    BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,10,0">
-                <StackPanel>
-                    <TextBlock Text="Объектов жилья" FontSize="11" Foreground="{DynamicResource MutedTextColor}" />
-                    <TextBlock x:Name="TxtStatHotels" Text="0" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource PrimaryDarkColor}" Margin="0,5,0,0" />
-                </StackPanel>
+                    <Button Grid.Column="1" Content="Витрина каталога" 
+                            Height="34" MinWidth="140"
+                            Background="{DynamicResource PrimaryColor}"
+                            Foreground="#FFFFFF"
+                            Click="BtnGoToCatalog_Click" />
+                </Grid>
             </Border>
 
-                        <Border Background="{DynamicResource SurfaceColor}" BorderBrush="{DynamicResource BorderBrushColor}" 
-                    BorderThickness="1" CornerRadius="8" Padding="15" Margin="5,0,5,0">
+                        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,15">
+                                <Border Background="{DynamicResource SurfaceColor}" BorderBrush="{DynamicResource BorderBrushColor}" 
+                        BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="Объектов жилья" FontSize="11" Foreground="{DynamicResource MutedTextColor}" />
+                        <TextBlock x:Name="TxtStatHotels" Text="0" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource PrimaryDarkColor}" Margin="0,5,0,0" />
+                    </StackPanel>
+                </Border>
+
+                                <Border Background="{DynamicResource SurfaceColor}" BorderBrush="{DynamicResource BorderBrushColor}" 
+                        BorderThickness="1" CornerRadius="8" Padding="15" Margin="5,0,5,0">
+                    <StackPanel>
+                        <TextBlock Text="Номеров в фонде" FontSize="11" Foreground="{DynamicResource MutedTextColor}" />
+                        <TextBlock x:Name="TxtStatRooms" Text="0" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Margin="0,5,0,0" />
+                    </StackPanel>
+                </Border>
+
+                                <Border Background="{DynamicResource SurfaceColor}" BorderBrush="{DynamicResource BorderBrushColor}" 
+                        BorderThickness="1" CornerRadius="8" Padding="15" Margin="5,0,5,0">
+                    <StackPanel>
+                        <TextBlock Text="Всего бронирований" FontSize="11" Foreground="{DynamicResource MutedTextColor}" />
+                        <TextBlock x:Name="TxtStatBookings" Text="0" FontSize="26" FontWeight="Bold" Foreground="#D97706" Margin="0,5,0,0" />
+                    </StackPanel>
+                </Border>
+
+                                <Border Background="{DynamicResource SurfaceColor}" BorderBrush="{DynamicResource BorderBrushColor}" 
+                        BorderThickness="1" CornerRadius="8" Padding="15" Margin="10,0,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Поступило оплат" FontSize="11" Foreground="{DynamicResource MutedTextColor}" />
+                        <TextBlock x:Name="TxtStatRevenue" Text="0 ₽" FontSize="24" FontWeight="Bold" Foreground="#10B981" Margin="0,5,0,0" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+                        <Border Grid.Row="2" Background="{DynamicResource SurfaceColor}"
+                    BorderBrush="{DynamicResource BorderBrushColor}"
+                    BorderThickness="1" CornerRadius="8" Padding="25" Margin="0,0,0,10">
                 <StackPanel>
-                    <TextBlock Text="Номеров в фонде" FontSize="11" Foreground="{DynamicResource MutedTextColor}" />
-                    <TextBlock x:Name="TxtStatRooms" Text="0" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Margin="0,5,0,0" />
+                    <TextBlock Text="Выберите раздел для работы с базой данных:" 
+                               FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,15" />
+
+                    <UniformGrid Columns="2">
+                                                <Border Background="{DynamicResource BackgroundColor}" BorderBrush="{DynamicResource BorderBrushColor}"
+                                BorderThickness="1" CornerRadius="10" Margin="8" Padding="18">
+                            <StackPanel>
+                                <TextBlock Text="🏨 Объекты размещения" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" />
+                                <TextBlock Text="Просмотр, добавление, редактирование и удаление отелей, апартаментов и курортов" 
+                                           FontSize="12" Foreground="{DynamicResource MutedTextColor}" TextWrapping="Wrap" Margin="0,6,0,15" />
+                                <Button Content="Управление объектами" Height="36" Click="BtnNavAccommodations_Click" />
+                            </StackPanel>
+                        </Border>
+
+                                                <Border Background="{DynamicResource BackgroundColor}" BorderBrush="{DynamicResource BorderBrushColor}"
+                                BorderThickness="1" CornerRadius="10" Margin="8" Padding="18">
+                            <StackPanel>
+                                <TextBlock Text="🚪 Номерной фонд" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" />
+                                <TextBlock Text="Управление номерами, категориями комфорта, вместимостью, этажами и статусом доступности" 
+                                           FontSize="12" Foreground="{DynamicResource MutedTextColor}" TextWrapping="Wrap" Margin="0,6,0,15" />
+                                <Button Content="Управление номерами" Height="36" Click="BtnNavRooms_Click" />
+                            </StackPanel>
+                        </Border>
+
+                                                <Border Background="{DynamicResource BackgroundColor}" BorderBrush="{DynamicResource BorderBrushColor}"
+                                BorderThickness="1" CornerRadius="10" Margin="8" Padding="18">
+                            <StackPanel>
+                                <TextBlock Text="📋 Журнал бронирований" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" />
+                                <TextBlock Text="Контроль заездов/выездов, статусы броней, привязка дополнительных услуг и учет платежей" 
+                                           FontSize="12" Foreground="{DynamicResource MutedTextColor}" TextWrapping="Wrap" Margin="0,6,0,15" />
+                                <Button Content="Журнал броней" Height="36" Click="BtnNavBookings_Click" />
+                            </StackPanel>
+                        </Border>
+
+                                                <Border Background="{DynamicResource BackgroundColor}" BorderBrush="{DynamicResource BorderBrushColor}"
+                                BorderThickness="1" CornerRadius="10" Margin="8" Padding="18">
+                            <StackPanel>
+                                <TextBlock Text="📊 Аналитика и отчетность" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" />
+                                <TextBlock Text="Графики загрузки номеров, выгрузка аналитических сводок в Word, Excel и PDF" 
+                                           FontSize="12" Foreground="{DynamicResource MutedTextColor}" TextWrapping="Wrap" Margin="0,6,0,15" />
+                                <Button Content="Открыть аналитику" Height="36" Click="BtnNavAnalytics_Click" />
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
                 </StackPanel>
             </Border>
-
-                        <Border Background="{DynamicResource SurfaceColor}" BorderBrush="{DynamicResource BorderBrushColor}" 
-                    BorderThickness="1" CornerRadius="8" Padding="15" Margin="5,0,5,0">
-                <StackPanel>
-                    <TextBlock Text="Всего бронирований" FontSize="11" Foreground="{DynamicResource MutedTextColor}" />
-                    <TextBlock x:Name="TxtStatBookings" Text="0" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource AccentColor}" Margin="0,5,0,0" />
-                </StackPanel>
-            </Border>
-
-                        <Border Background="{DynamicResource SurfaceColor}" BorderBrush="{DynamicResource BorderBrushColor}" 
-                    BorderThickness="1" CornerRadius="8" Padding="15" Margin="10,0,0,0">
-                <StackPanel>
-                    <TextBlock Text="Поступило оплат" FontSize="11" Foreground="{DynamicResource MutedTextColor}" />
-                    <TextBlock x:Name="TxtStatRevenue" Text="0 ₽" FontSize="24" FontWeight="Bold" Foreground="#10B981" Margin="0,5,0,0" />
-                </StackPanel>
-            </Border>
-        </UniformGrid>
-
-                <Border Grid.Row="2" Background="{DynamicResource SurfaceColor}"
-                BorderBrush="{DynamicResource BorderBrushColor}"
-                BorderThickness="1" CornerRadius="8" Padding="30">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" Text="Выберите раздел для работы с базой данных:" 
-                           FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,25" />
-
-                <UniformGrid Grid.Row="1" Columns="2" Rows="2" VerticalAlignment="Center" MaxWidth="850">
-                                        <Border Background="{DynamicResource BackgroundColor}" BorderBrush="{DynamicResource BorderBrushColor}"
-                            BorderThickness="1" CornerRadius="10" Margin="10" Padding="20">
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="🏨 Объекты размещения" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" />
-                            <TextBlock Text="Просмотр, добавление, редактирование и удаление отелей, апартаментов и курортов" 
-                                       FontSize="12" Foreground="{DynamicResource MutedTextColor}" TextWrapping="Wrap" Margin="0,6,0,15" />
-                            <Button Content="Управление объектами" Height="36" Click="BtnNavAccommodations_Click" />
-                        </StackPanel>
-                    </Border>
-
-                                        <Border Background="{DynamicResource BackgroundColor}" BorderBrush="{DynamicResource BorderBrushColor}"
-                            BorderThickness="1" CornerRadius="10" Margin="10" Padding="20">
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="🚪 Номерной фонд" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" />
-                            <TextBlock Text="Управление номерами, категориями комфорта, вместимостью, этажами и статусом доступности" 
-                                       FontSize="12" Foreground="{DynamicResource MutedTextColor}" TextWrapping="Wrap" Margin="0,6,0,15" />
-                            <Button Content="Управление номерами" Height="36" Click="BtnNavRooms_Click" />
-                        </StackPanel>
-                    </Border>
-
-                                        <Border Background="{DynamicResource BackgroundColor}" BorderBrush="{DynamicResource BorderBrushColor}"
-                            BorderThickness="1" CornerRadius="10" Margin="10" Padding="20">
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="📋 Журнал бронирований" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" />
-                            <TextBlock Text="Контроль заездов/выездов, статусы броней, привязка дополнительных услуг и учет платежей" 
-                                       FontSize="12" Foreground="{DynamicResource MutedTextColor}" TextWrapping="Wrap" Margin="0,6,0,15" />
-                            <Button Content="Журнал броней" Height="36" Click="BtnNavBookings_Click" />
-                        </StackPanel>
-                    </Border>
-
-                                        <Border Background="{DynamicResource BackgroundColor}" BorderBrush="{DynamicResource BorderBrushColor}"
-                            BorderThickness="1" CornerRadius="10" Margin="10" Padding="20">
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="📊 Аналитика и отчетность" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" />
-                            <TextBlock Text="Графики загрузки номеров, выгрузка аналитических сводок в Word, Excel и PDF" 
-                                       FontSize="12" Foreground="{DynamicResource MutedTextColor}" TextWrapping="Wrap" Margin="0,6,0,15" />
-                            <Button Content="Открыть аналитику" Height="36" Click="BtnNavAnalytics_Click" />
-                        </StackPanel>
-                    </Border>
-                </UniformGrid>
-            </Grid>
-        </Border>
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </Page>
