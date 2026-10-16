@@ -45,17 +45,34 @@
 
                 <DataGrid x:Name="DgBookings" Grid.Row="1"
                   AutoGenerateColumns="False" CanUserAddRows="False"
+                  CanUserResizeColumns="True"
                   IsReadOnly="True" SelectionMode="Single"
                   Background="{DynamicResource SurfaceColor}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="№" Binding="{Binding BookingId}" Width="50" />
-                <DataGridTextColumn Header="Гость (ФИО)" Binding="{Binding User.Fio}" Width="190" FontWeight="SemiBold" />
-                <DataGridTextColumn Header="Телефон" Binding="{Binding User.Phone}" Width="125" />
-                <DataGridTextColumn Header="Отель / Объект" Binding="{Binding Room.Accommodation.Name}" Width="*" MinWidth="170" />
-                <DataGridTextColumn Header="Комната" Binding="{Binding Room.RoomNumber}" Width="75" />
-                <DataGridTextColumn Header="Заезд" Binding="{Binding CheckIn, StringFormat='{}{0:dd.MM.yyyy}'}" Width="90" />
-                <DataGridTextColumn Header="Выезд" Binding="{Binding CheckOut, StringFormat='{}{0:dd.MM.yyyy}'}" Width="90" />
-                <DataGridTextColumn Header="Гостей" Binding="{Binding Guests}" Width="65" />
+                <DataGridTextColumn Header="№" Binding="{Binding BookingId}" Width="50" CanUserResize="False" />
+                <DataGridTextColumn Header="Гость (ФИО)" Binding="{Binding User.Fio}" Width="210" MinWidth="130" FontWeight="SemiBold">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            <Setter Property="ToolTip" Value="{Binding User.Fio}" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Телефон" Binding="{Binding User.Phone}" Width="125" MinWidth="100" />
+                <DataGridTextColumn Header="Отель / Объект" Binding="{Binding Room.Accommodation.Name}" Width="*" MinWidth="170">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            <Setter Property="ToolTip" Value="{Binding Room.Accommodation.Name}" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Комната" Binding="{Binding Room.RoomNumber}" Width="75" MinWidth="60" />
+                <DataGridTextColumn Header="Заезд" Binding="{Binding CheckIn, StringFormat='{}{0:dd.MM.yyyy}'}" Width="90" MinWidth="80" />
+                <DataGridTextColumn Header="Выезд" Binding="{Binding CheckOut, StringFormat='{}{0:dd.MM.yyyy}'}" Width="90" MinWidth="80" />
+                <DataGridTextColumn Header="Гостей" Binding="{Binding Guests}" Width="65" MinWidth="55" />
                 
                                 <DataGridTemplateColumn Header="Статус" Width="140">
                     <DataGridTemplateColumn.CellTemplate>
