@@ -55,7 +55,7 @@
                 <DataGridTextColumn Header="Название объекта" Binding="{Binding Name}" Width="220" />
                 <DataGridTextColumn Header="Тип" Binding="{Binding Type.TypeName}" Width="130" />
                 <DataGridTextColumn Header="Город" Binding="{Binding City.CityName}" Width="120" />
-                <DataGridTextColumn Header="Адрес" Binding="{Binding Address}" Width="230" />
+                <DataGridTextColumn Header="Адрес" Binding="{Binding Address}" Width="*" MinWidth="160" />
                 <DataGridTextColumn Header="Номеров" Binding="{Binding Rooms}" Width="80" />
                 <DataGridTextColumn Header="Мест" Binding="{Binding Capacity}" Width="70" />
                 <DataGridTextColumn Header="Цена/ночь" Binding="{Binding PricePerNight, StringFormat='{}{0:N0} ₽'}" Width="100" />

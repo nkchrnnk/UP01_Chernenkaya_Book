@@ -61,12 +61,14 @@
                         Click="BtnReset_Click" />
 
                 <!-- Кнопка перехода в админку -->
-                <Button x:Name="BtnAdminPanel" Content="★ Панель управления" 
+                <Button x:Name="BtnAdminPanel" 
                         Height="32" Margin="5,0,0,0"
                         Background="{DynamicResource PrimaryDarkColor}"
                         Foreground="#FFFFFF"
                         Visibility="Collapsed"
-                        Click="BtnAdminPanel_Click" />
+                        Click="BtnAdminPanel_Click">
+                    <TextBlock Text="★ Панель управления" Foreground="#FFFFFF" FontWeight="Bold" VerticalAlignment="Center" Margin="4,0" />
+                </Button>
             </WrapPanel>
         </Border>
 

@@ -54,26 +54,72 @@
                   Background="{DynamicResource SurfaceColor}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="№" Binding="{Binding BookingId}" Width="50" />
-                <DataGridTextColumn Header="Гость (ФИО)" Binding="{Binding User.Fio}" Width="200" FontWeight="SemiBold" />
-                <DataGridTextColumn Header="Телефон" Binding="{Binding User.Phone}" Width="130" />
-                <DataGridTextColumn Header="Отель / Объект" Binding="{Binding Room.Accommodation.Name}" Width="210" />
+                <DataGridTextColumn Header="Гость (ФИО)" Binding="{Binding User.Fio}" Width="190" FontWeight="SemiBold" />
+                <DataGridTextColumn Header="Телефон" Binding="{Binding User.Phone}" Width="125" />
+                <DataGridTextColumn Header="Отель / Объект" Binding="{Binding Room.Accommodation.Name}" Width="*" MinWidth="170" />
                 <DataGridTextColumn Header="Комната" Binding="{Binding Room.RoomNumber}" Width="75" />
-                <DataGridTextColumn Header="Заезд" Binding="{Binding CheckIn, StringFormat='{}{0:dd.MM.yyyy}'}" Width="95" />
-                <DataGridTextColumn Header="Выезд" Binding="{Binding CheckOut, StringFormat='{}{0:dd.MM.yyyy}'}" Width="95" />
+                <DataGridTextColumn Header="Заезд" Binding="{Binding CheckIn, StringFormat='{}{0:dd.MM.yyyy}'}" Width="90" />
+                <DataGridTextColumn Header="Выезд" Binding="{Binding CheckOut, StringFormat='{}{0:dd.MM.yyyy}'}" Width="90" />
                 <DataGridTextColumn Header="Гостей" Binding="{Binding Guests}" Width="65" />
-                <DataGridTextColumn Header="Статус" Binding="{Binding Status.StatusName}" Width="130" FontWeight="SemiBold" />
+                
+                <!-- Статус бронирования с цветным бейджем -->
+                <DataGridTemplateColumn Header="Статус" Width="140">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="4" Padding="6,3" HorizontalAlignment="Center">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="#1A3B82F6" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding StatusId}" Value="1">
+                                                <Setter Property="Background" Value="#2010B981" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding StatusId}" Value="2">
+                                                <Setter Property="Background" Value="#25F59E0B" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding StatusId}" Value="4">
+                                                <Setter Property="Background" Value="#20EF4444" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="{Binding Status.StatusName}" FontWeight="SemiBold" FontSize="11.5">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#2563EB" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding StatusId}" Value="1">
+                                                    <Setter Property="Foreground" Value="#10B981" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding StatusId}" Value="2">
+                                                    <Setter Property="Foreground" Value="#D97706" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding StatusId}" Value="4">
+                                                    <Setter Property="Foreground" Value="#EF4444" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
                 <!-- Быстрые действия со статусом брони -->
-                <DataGridTemplateColumn Header="Управление статусом" Width="220">
+                <DataGridTemplateColumn Header="Управление бронью" Width="285">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Content="✔ Подтвердить" Height="26" MinWidth="85" Margin="2,0" FontSize="10.5"
-                                        Background="#2A9D8F"
-                                        Click="BtnConfirm_Click" />
-                                <Button Content="✖ Отменить" Height="26" MinWidth="75" Margin="2,0" FontSize="10.5"
-                                        Background="{DynamicResource DangerColor}"
-                                        Click="BtnCancelBooking_Click" />
+                                <Button Content="✔ Подтвердить" Height="26" Width="105" MinWidth="90" Margin="2,0" Padding="2,0" FontSize="10.5"
+                                        Background="#10B981" Foreground="#FFFFFF"
+                                        Click="BtnConfirm_Click" ToolTip="Перевести статус в «Подтверждено»" />
+                                <Button Content="✖ Отменить" Height="26" Width="85" MinWidth="75" Margin="2,0" Padding="2,0" FontSize="10.5"
+                                        Background="#F59E0B" Foreground="#FFFFFF"
+                                        Click="BtnCancelBooking_Click" ToolTip="Отменить бронирование" />
+                                <Button Content="🗑 Удалить" Height="26" Width="80" MinWidth="70" Margin="2,0" Padding="2,0" FontSize="10.5"
+                                        Background="{DynamicResource DangerColor}" Foreground="#FFFFFF"
+                                        Click="BtnDeleteBooking_Click" ToolTip="Удалить запись из базы" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

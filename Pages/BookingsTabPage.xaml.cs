@@ -87,6 +87,7 @@ public partial class BookingsTabPage : Page
         }
 
         var result = filtered.ToList();
+        DgBookings.ItemsSource = null;
         DgBookings.ItemsSource = result;
         TxtStatus.Text = $"Отображено бронирований: {result.Count} из {_allBookings.Count}";
     }
@@ -121,7 +122,7 @@ public partial class BookingsTabPage : Page
         if (sender is Button btn && btn.DataContext is Booking booking)
         {
             var res = MessageBox.Show(
-                $"Вы уверены, что хотите отменить бронирование №{booking.BookingId}?",
+                $"Вы уверены, что хотите перевести бронирование №{booking.BookingId} в статус «Отменено»?",
                 "Подтверждение отмены",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
@@ -145,6 +146,41 @@ public partial class BookingsTabPage : Page
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Ошибка обновления статуса: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+    }
+
+    private void BtnDeleteBooking_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.DataContext is Booking booking)
+        {
+            var res = MessageBox.Show(
+                $"Вы уверены, что хотите полностью удалить бронирование №{booking.BookingId} из базы данных?",
+                "Подтверждение удаления",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (res == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    using var db = new BookingDbContext();
+                    var entity = db.Bookings.Include(b => b.Payments).Include(b => b.BookingServices).FirstOrDefault(b => b.BookingId == booking.BookingId);
+                    if (entity != null)
+                    {
+                        db.Payments.RemoveRange(entity.Payments);
+                        db.BookingServices.RemoveRange(entity.BookingServices);
+                        db.Bookings.Remove(entity);
+                        db.SaveChanges();
+
+                        MessageBox.Show($"Бронирование №{booking.BookingId} успешно удалено!", "Удаление", MessageBoxButton.OK, MessageBoxImage.Information);
+                        LoadBookings();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка удаления бронирования: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

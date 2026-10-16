@@ -59,7 +59,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding RoomId}" Width="50" />
                 <DataGridTextColumn Header="Номер" Binding="{Binding RoomNumber}" Width="90" FontWeight="SemiBold" />
-                <DataGridTextColumn Header="Объект размещения" Binding="{Binding Accommodation.Name}" Width="230" />
+                <DataGridTextColumn Header="Объект размещения" Binding="{Binding Accommodation.Name}" Width="*" MinWidth="180" />
                 <DataGridTextColumn Header="Этаж" Binding="{Binding Floor}" Width="70" />
                 <DataGridTextColumn Header="Категория" Binding="{Binding RoomType}" Width="190" />
                 <DataGridTextColumn Header="Вместимость" Binding="{Binding Capacity, StringFormat='{}{0} чел.'}" Width="110" />

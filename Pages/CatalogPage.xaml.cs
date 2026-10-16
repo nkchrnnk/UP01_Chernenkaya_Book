@@ -159,12 +159,83 @@ public partial class CatalogPage : Page
 
         if (sender is Button btn && btn.DataContext is Accommodation acc)
         {
-            MessageBox.Show(
-                $"Заявка на бронирование объекта «{acc.Name}» ({acc.City?.CityName}) успешно отправлена!\n" +
-                $"С вами свяжется администратор отеля по телефону {SessionContext.ActiveUser?.Phone}.",
-                "Бронирование подтверждено",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            try
+            {
+                using var db = new BookingDbContext();
+
+                // Ищем свободную или любую доступную комнату в данном отеле
+                var room = db.Rooms.FirstOrDefault(r => r.AccommodationId == acc.AccommodationId && r.IsAvailable == true)
+                           ?? db.Rooms.FirstOrDefault(r => r.AccommodationId == acc.AccommodationId);
+
+                if (room == null)
+                {
+                    // Если комнат еще нет в фонде этого отеля, создаем базовую комнату
+                    room = new Room
+                    {
+                        AccommodationId = acc.AccommodationId,
+                        RoomNumber = "101",
+                        Floor = 1,
+                        RoomType = "Стандарт",
+                        Capacity = 2,
+                        PricePerNight = acc.PricePerNight,
+                        IsAvailable = true
+                    };
+                    db.Rooms.Add(room);
+                    db.SaveChanges();
+                }
+
+                // Статус "Ожидает оплаты" для подтверждения администратором
+                var status = db.BookingStatuses.FirstOrDefault(s => s.StatusName == "Ожидает оплаты")
+                             ?? db.BookingStatuses.FirstOrDefault();
+
+                var today = DateOnly.FromDateTime(DateTime.Today);
+                var checkIn = today.AddDays(1);
+                var checkOut = today.AddDays(4);
+                decimal totalPrice = acc.PricePerNight * 3;
+
+                var newBooking = new Booking
+                {
+                    UserId = SessionContext.ActiveUser!.UserId,
+                    RoomId = room.RoomId,
+                    CheckIn = checkIn,
+                    CheckOut = checkOut,
+                    Guests = 2,
+                    StatusId = status?.StatusId ?? 1,
+                    CreatedAt = DateTime.Now,
+                    Comment = $"Онлайн-бронирование через каталог: {acc.Name}"
+                };
+
+                db.Bookings.Add(newBooking);
+                db.SaveChanges();
+
+                // Фиксация платежа
+                var payment = new Payment
+                {
+                    BookingId = newBooking.BookingId,
+                    Amount = totalPrice,
+                    PaymentDate = DateTime.Now,
+                    PaymentMethod = "Банковская карта",
+                    PaymentStatus = "Оплачено"
+                };
+                db.Payments.Add(payment);
+                db.SaveChanges();
+
+                MessageBox.Show(
+                    $"Заявка на бронирование объекта «{acc.Name}» ({acc.City?.CityName}) успешно оформлена!\n\n" +
+                    $"• Номер брони: №{newBooking.BookingId}\n" +
+                    $"• Комната: №{room.RoomNumber} ({room.RoomType})\n" +
+                    $"• Период: с {newBooking.CheckIn:dd.MM.yyyy} по {newBooking.CheckOut:dd.MM.yyyy} (3 суток)\n" +
+                    $"• Сумма к оплате: {totalPrice:N0} ₽\n" +
+                    $"• Текущий статус: {status?.StatusName}\n\n" +
+                    $"Запись добавлена в базу данных и отображается в журнале бронирований.",
+                    "Бронирование создано",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка создания бронирования: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
