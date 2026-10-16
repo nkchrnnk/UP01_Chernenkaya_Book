@@ -48,6 +48,7 @@
         <!-- Шаг 10: Таблица DataGrid объектов размещения -->
         <DataGrid x:Name="DgAccommodations" Grid.Row="1"
                   AutoGenerateColumns="False" CanUserAddRows="False"
+                  CanUserResizeColumns="True"
                   IsReadOnly="True" SelectionMode="Single"
                   Background="{DynamicResource SurfaceColor}">
             <DataGrid.Columns>
