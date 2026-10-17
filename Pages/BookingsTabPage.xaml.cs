@@ -13,6 +13,7 @@ public partial class BookingsTabPage : Page
     private List<Booking> _allBookings = new();
     private bool _isInitialized = false;
 
+    // Конструктор страницы управления бронированиями в панели администратора
     public BookingsTabPage()
     {
         InitializeComponent();
@@ -20,6 +21,7 @@ public partial class BookingsTabPage : Page
         LoadBookings();
     }
 
+    // Загрузка доступных статусов для фильтрации списка заявок
     private void LoadFilterData()
     {
         try
@@ -40,6 +42,7 @@ public partial class BookingsTabPage : Page
         }
     }
 
+    // Загрузка всех бронирований с подгрузкой связанных сущностей отелей, комнат и клиентов
     private void LoadBookings()
     {
         try
@@ -60,12 +63,14 @@ public partial class BookingsTabPage : Page
         }
     }
 
+    // Обработчик изменения строки поиска или выбранного статуса
     private void FilterChanged(object sender, EventArgs e)
     {
         if (!_isInitialized) return;
         ApplyFilters();
     }
 
+    // Применение текстовой фильтрации и фильтра по статусу к таблице бронирований
     private void ApplyFilters()
     {
         if (_allBookings == null) return;
@@ -92,6 +97,33 @@ public partial class BookingsTabPage : Page
         TxtStatus.Text = $"Отображено бронирований: {result.Count} из {_allBookings.Count}";
     }
 
+    // Одобрение заявки администратором: перевод в статус «Ожидает оплаты» для выставления счета гостю
+    private void BtnApprove_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.DataContext is Booking booking)
+        {
+            try
+            {
+                using var db = new BookingDbContext();
+                var entity = db.Bookings.Find(booking.BookingId);
+                var paymentStatus = db.BookingStatuses.FirstOrDefault(s => s.StatusName == "Ожидает оплаты");
+
+                if (entity != null && paymentStatus != null)
+                {
+                    entity.StatusId = paymentStatus.StatusId;
+                    db.SaveChanges();
+                    MessageBox.Show($"Заявка №{booking.BookingId} одобрена! Статус изменен на «Ожидает оплаты». Счет доступен гостю в Личном кабинете.", "Статус обновлен", MessageBoxButton.OK, MessageBoxImage.Information);
+                    LoadBookings();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка изменения статуса: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
+    // Перевод бронирования в статус «Подтверждено»
     private void BtnConfirm_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is Booking booking)
@@ -117,6 +149,7 @@ public partial class BookingsTabPage : Page
         }
     }
 
+    // Перевод бронирования в статус «Отменено»
     private void BtnCancelBooking_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is Booking booking)
@@ -151,6 +184,7 @@ public partial class BookingsTabPage : Page
         }
     }
 
+    // Полное каскадное удаление бронирования и связанных услуг и платежей из базы данных
     private void BtnDeleteBooking_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is Booking booking)
@@ -186,6 +220,7 @@ public partial class BookingsTabPage : Page
         }
     }
 
+    // Возврат в панель управления администратора
     private void BtnBackToHub_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new AdminHubPage());

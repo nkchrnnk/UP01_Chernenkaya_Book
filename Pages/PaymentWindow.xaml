@@ -1,0 +1,149 @@
+<Window x:Class="UP01_Chernenkaya_Book.Pages.PaymentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UP01_Chernenkaya_Book.Pages"
+        mc:Ignorable="d"
+        Title="Оплата бронирования номера" 
+        Height="620" Width="560"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="{DynamicResource BackgroundColor}">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{DynamicResource SurfaceColor}"
+                BorderBrush="{DynamicResource BorderBrushColor}"
+                BorderThickness="1" CornerRadius="8"
+                Padding="15,12" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock x:Name="TxtTitle" Text="Оплата бронирования №" 
+                           FontWeight="Bold" FontSize="18" 
+                           Foreground="{DynamicResource PrimaryDarkColor}" />
+                <TextBlock x:Name="TxtSubtitle" Text="Счет выставлен к оплате" 
+                           FontSize="12" Foreground="{DynamicResource MutedTextColor}" Margin="0,2,0,0" />
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Border Background="{DynamicResource SurfaceColor}"
+                    BorderBrush="{DynamicResource BorderBrushColor}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="16,14">
+                <StackPanel>
+                    <TextBlock Text="Детали бронирования и счета:" FontWeight="Bold" 
+                               Foreground="{DynamicResource TextColor}" Margin="0,0,0,6" />
+
+                    <Border Background="{DynamicResource BackgroundColor}" 
+                            BorderBrush="{DynamicResource BorderBrushColor}" 
+                            BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock x:Name="TxtAccName" Text="Отель: ..." FontWeight="SemiBold" 
+                                       Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                            <TextBlock x:Name="TxtRoomDetails" Text="Категория номера: ..." 
+                                       FontSize="12" Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                            <TextBlock x:Name="TxtDates" Text="Период проживания: ..." 
+                                       FontSize="12" Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                            <TextBlock x:Name="TxtGuests" Text="Количество гостей: ..." 
+                                       FontSize="12" Foreground="{DynamicResource TextColor}" Margin="0,0,0,6" />
+
+                            <Separator Margin="0,4,0,8" Background="{DynamicResource BorderBrushColor}" />
+
+                            <TextBlock x:Name="TxtCostBreakdown" Text="Расчет: ..." 
+                                       FontSize="12" Foreground="{DynamicResource MutedTextColor}" Margin="0,0,0,4" />
+                            <TextBlock x:Name="TxtTotalAmount" Text="К ОПЛАТЕ: 0 ₽" 
+                                       FontWeight="Bold" FontSize="16" Foreground="{DynamicResource PrimaryDarkColor}" />
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="Способ оплаты:" FontWeight="SemiBold" 
+                               Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                    <ComboBox x:Name="CmbMethod" Height="34" Margin="0,0,0,12" 
+                              SelectionChanged="CmbMethod_SelectionChanged">
+                        <ComboBoxItem Content="Банковская карта (МИР, Visa, MasterCard)" IsSelected="True" />
+                        <ComboBoxItem Content="СБП (Система быстрых платежей)" />
+                        <ComboBoxItem Content="Наличные / терминал при заселении" />
+                    </ComboBox>
+
+                    <StackPanel x:Name="PanelCard">
+                        <TextBlock Text="Номер банковской карты:" FontWeight="SemiBold" 
+                                   Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                        <TextBox x:Name="TxtCardNumber" Height="34" Margin="0,0,0,10" 
+                                 Text="2202 2034 5678 9012" MaxLength="19" />
+
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="15" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Срок действия:" FontWeight="SemiBold" 
+                                           Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                                <TextBox x:Name="TxtCardExp" Height="34" Text="12/28" MaxLength="5" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Код CVC/CVV:" FontWeight="SemiBold" 
+                                           Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                                <TextBox x:Name="TxtCardCvc" Height="34" Text="884" MaxLength="3" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel x:Name="PanelSbp" Visibility="Collapsed">
+                        <TextBlock Text="Телефон для списания по СБП:" FontWeight="SemiBold" 
+                                   Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                        <TextBox x:Name="TxtSbpPhone" Height="34" Margin="0,0,0,10" 
+                                 Text="+7 (999) 777-88-99" />
+
+                        <TextBlock Text="Банк плательщика:" FontWeight="SemiBold" 
+                                   Foreground="{DynamicResource TextColor}" Margin="0,0,0,4" />
+                        <ComboBox x:Name="CmbSbpBank" Height="34" Margin="0,0,0,10">
+                            <ComboBoxItem Content="СберБанк" IsSelected="True" />
+                            <ComboBoxItem Content="Т-Банк (Тинькофф)" />
+                            <ComboBoxItem Content="ВТБ" />
+                            <ComboBoxItem Content="Альфа-Банк" />
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel x:Name="PanelCash" Visibility="Collapsed">
+                        <TextBlock Text="Оплата будет произведена на стойке регистрации отеля при заезде (наличными или через терминал)." 
+                                   TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource MutedTextColor}" Margin="0,0,0,10" />
+                    </StackPanel>
+
+                    <TextBlock Text="🛡 Платеж защищен 256-битным шифрованием. Средства зачисляются мгновенно." 
+                               FontSize="11" Foreground="{DynamicResource MutedTextColor}" Margin="0,5,0,0" />
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Margin="0,12,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="1" Content="Отмена" 
+                        Width="110" Height="36" Margin="0,0,10,0"
+                        Background="{DynamicResource SurfaceColor}"
+                        Foreground="{DynamicResource TextColor}"
+                        BorderBrush="{DynamicResource BorderBrushColor}"
+                        BorderThickness="1"
+                        Click="BtnCancel_Click" />
+
+                <Button x:Name="BtnPay" Grid.Column="2" Content="Оплатить 0 ₽" 
+                        Width="170" Height="36"
+                        Click="BtnPay_Click" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
