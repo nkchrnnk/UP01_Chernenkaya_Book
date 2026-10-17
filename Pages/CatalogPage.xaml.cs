@@ -14,35 +14,43 @@ public partial class CatalogPage : Page
     private List<Accommodation> _allAccommodations = new();
     private bool _isInitialized = false;
 
+    // Конструктор страницы каталога, загрузка фильтров и списка объектов
     public CatalogPage()
     {
         InitializeComponent();
         LoadFiltersData();
         RefreshCatalog();
 
-        // Кнопка перехода в админку видна только администраторам
+        // Отображение кнопки панели управления для администратора
         BtnAdminPanel.Visibility = SessionContext.IsAdministrator ? Visibility.Visible : Visibility.Collapsed;
+        BtnCabinet.Visibility = SessionContext.IsAuthenticated ? Visibility.Visible : Visibility.Collapsed;
     }
 
+    // Загрузка списков городов, типов жилья и категорий номеров для выпадающих списков
     private void LoadFiltersData()
     {
         try
         {
             using var db = new BookingDbContext();
 
-            // Города
+            // Загрузка списка городов
             var cities = db.Cities.OrderBy(c => c.CityName).ToList();
             var cityList = new List<string> { "Все города" };
             cityList.AddRange(cities.Select(c => c.CityName));
             CmbCity.ItemsSource = cityList;
             CmbCity.SelectedIndex = 0;
 
-            // Типы размещения
+            // Загрузка типов объектов размещения
             var types = db.AccommodationTypes.OrderBy(t => t.TypeName).ToList();
             var typeList = new List<string> { "Все типы жилья" };
             typeList.AddRange(types.Select(t => t.TypeName));
             CmbType.ItemsSource = typeList;
             CmbType.SelectedIndex = 0;
+
+            // Загрузка уникальных категорий номеров из базы
+            var categories = new List<string> { "Все категории номеров", "Люкс", "Делюкс", "Стандарт", "Студия", "Апартаменты", "Коттедж" };
+            CmbRoomCategory.ItemsSource = categories;
+            CmbRoomCategory.SelectedIndex = 0;
 
             _isInitialized = true;
         }
@@ -52,6 +60,7 @@ public partial class CatalogPage : Page
         }
     }
 
+    // Обновление полного перечня объектов размещения из базы данных
     private void RefreshCatalog()
     {
         try
@@ -60,6 +69,7 @@ public partial class CatalogPage : Page
             _allAccommodations = db.Accommodations
                 .Include(a => a.City)
                 .Include(a => a.Type)
+                .Include(a => a.RoomsNavigation)
                 .AsNoTracking()
                 .ToList();
 
@@ -71,20 +81,21 @@ public partial class CatalogPage : Page
         }
     }
 
+    // Обработчик события изменения любого критерия поиска или фильтрации
     private void FilterChanged(object sender, EventArgs e)
     {
         if (!_isInitialized) return;
         ApplyFilters();
     }
 
-    // Шаг 8: Фильтрация, поиск и сортировка
+    // Применение выбранных фильтров, текстового поиска и сортировки к списку объектов
     private void ApplyFilters()
     {
         if (_allAccommodations == null) return;
 
         IEnumerable<Accommodation> filtered = _allAccommodations;
 
-        // Поиск по названию и адресу
+        // Поиск по названию отеля, адресу или городу
         string query = TxtSearch.Text?.Trim().ToLower() ?? "";
         if (!string.IsNullOrEmpty(query))
         {
@@ -94,19 +105,32 @@ public partial class CatalogPage : Page
                 (a.City != null && a.City.CityName.ToLower().Contains(query)));
         }
 
-        // Фильтр по городу
+        // Фильтрация по выбранному городу
         if (CmbCity.SelectedIndex > 0 && CmbCity.SelectedItem is string selectedCity)
         {
             filtered = filtered.Where(a => a.City != null && a.City.CityName == selectedCity);
         }
 
-        // Фильтр по типу жилья
+        // Фильтрация по типу объекта (Отель, Апартаменты и т.д.)
         if (CmbType.SelectedIndex > 0 && CmbType.SelectedItem is string selectedType)
         {
             filtered = filtered.Where(a => a.Type != null && a.Type.TypeName == selectedType);
         }
 
-        // Сортировка
+        // Фильтрация по категории номера (Люкс, Делюкс, Стандарт и др.)
+        if (CmbRoomCategory.SelectedIndex > 0 && CmbRoomCategory.SelectedItem is string selectedCategory)
+        {
+            filtered = filtered.Where(a => a.RoomsNavigation.Any(r => r.RoomType.ToLower().Contains(selectedCategory.ToLower())));
+        }
+
+        // Фильтрация по вместимости гостей
+        if (CmbGuests.SelectedIndex > 0)
+        {
+            int minGuests = CmbGuests.SelectedIndex;
+            filtered = filtered.Where(a => a.Capacity >= minGuests || a.RoomsNavigation.Any(r => r.Capacity >= minGuests));
+        }
+
+        // Сортировка по стоимости или рейтингу
         if (CmbSort.SelectedItem is ComboBoxItem sortItem)
         {
             string sortMode = sortItem.Content.ToString() ?? "";
@@ -124,22 +148,39 @@ public partial class CatalogPage : Page
         TxtCount.Text = $"Найдено объектов размещения: {resultList.Count} из {_allAccommodations.Count}";
     }
 
+    // Сброс всех установленных фильтров к значениям по умолчанию
     private void BtnReset_Click(object sender, RoutedEventArgs e)
     {
         _isInitialized = false;
         TxtSearch.Text = string.Empty;
         CmbCity.SelectedIndex = 0;
         CmbType.SelectedIndex = 0;
+        CmbRoomCategory.SelectedIndex = 0;
+        CmbGuests.SelectedIndex = 0;
         CmbSort.SelectedIndex = 0;
         _isInitialized = true;
         ApplyFilters();
     }
 
+    // Переход в личный кабинет текущего пользователя
+    private void BtnCabinet_Click(object sender, RoutedEventArgs e)
+    {
+        if (!SessionContext.IsAuthenticated)
+        {
+            NavigationService.Navigate(new AuthPage());
+            return;
+        }
+
+        NavigationService.Navigate(new UserCabinetPage());
+    }
+
+    // Переход в панель управления администратора
     private void BtnAdminPanel_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new AdminHubPage());
     }
 
+    // Открытие окна бронирования выбранного объекта с выбором номеров и дат
     private void BtnBook_Click(object sender, RoutedEventArgs e)
     {
         if (!SessionContext.IsAuthenticated)
@@ -159,82 +200,19 @@ public partial class CatalogPage : Page
 
         if (sender is Button btn && btn.DataContext is Accommodation acc)
         {
-            try
+            var bookingWindow = new BookingWindow(acc);
+            if (bookingWindow.ShowDialog() == true)
             {
-                using var db = new BookingDbContext();
+                var askCabinet = MessageBox.Show(
+                    "Заявка на бронирование успешно сформирована!\nПерейти в Личный кабинет для просмотра статуса и счета?",
+                    "Переход в личный кабинет",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
 
-                // Ищем свободную или любую доступную комнату в данном отеле
-                var room = db.Rooms.FirstOrDefault(r => r.AccommodationId == acc.AccommodationId && r.IsAvailable == true)
-                           ?? db.Rooms.FirstOrDefault(r => r.AccommodationId == acc.AccommodationId);
-
-                if (room == null)
+                if (askCabinet == MessageBoxResult.Yes)
                 {
-                    // Если комнат еще нет в фонде этого отеля, создаем базовую комнату
-                    room = new Room
-                    {
-                        AccommodationId = acc.AccommodationId,
-                        RoomNumber = "101",
-                        Floor = 1,
-                        RoomType = "Стандарт",
-                        Capacity = 2,
-                        PricePerNight = acc.PricePerNight,
-                        IsAvailable = true
-                    };
-                    db.Rooms.Add(room);
-                    db.SaveChanges();
+                    NavigationService.Navigate(new UserCabinetPage());
                 }
-
-                // Статус "Ожидает оплаты" для подтверждения администратором
-                var status = db.BookingStatuses.FirstOrDefault(s => s.StatusName == "Ожидает оплаты")
-                             ?? db.BookingStatuses.FirstOrDefault();
-
-                var today = DateOnly.FromDateTime(DateTime.Today);
-                var checkIn = today.AddDays(1);
-                var checkOut = today.AddDays(4);
-                decimal totalPrice = acc.PricePerNight * 3;
-
-                var newBooking = new Booking
-                {
-                    UserId = SessionContext.ActiveUser!.UserId,
-                    RoomId = room.RoomId,
-                    CheckIn = checkIn,
-                    CheckOut = checkOut,
-                    Guests = 2,
-                    StatusId = status?.StatusId ?? 1,
-                    CreatedAt = DateTime.Now,
-                    Comment = $"Онлайн-бронирование через каталог: {acc.Name}"
-                };
-
-                db.Bookings.Add(newBooking);
-                db.SaveChanges();
-
-                // Фиксация платежа
-                var payment = new Payment
-                {
-                    BookingId = newBooking.BookingId,
-                    Amount = totalPrice,
-                    PaymentDate = DateTime.Now,
-                    PaymentMethod = "Банковская карта",
-                    PaymentStatus = "Оплачено"
-                };
-                db.Payments.Add(payment);
-                db.SaveChanges();
-
-                MessageBox.Show(
-                    $"Заявка на бронирование объекта «{acc.Name}» ({acc.City?.CityName}) успешно оформлена!\n\n" +
-                    $"• Номер брони: №{newBooking.BookingId}\n" +
-                    $"• Комната: №{room.RoomNumber} ({room.RoomType})\n" +
-                    $"• Период: с {newBooking.CheckIn:dd.MM.yyyy} по {newBooking.CheckOut:dd.MM.yyyy} (3 суток)\n" +
-                    $"• Сумма к оплате: {totalPrice:N0} ₽\n" +
-                    $"• Текущий статус: {status?.StatusName}\n\n" +
-                    $"Запись добавлена в базу данных и отображается в журнале бронирований.",
-                    "Бронирование создано",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка создания бронирования: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
