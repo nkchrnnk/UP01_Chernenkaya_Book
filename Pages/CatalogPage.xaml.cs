@@ -9,45 +9,48 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
+/// <summary>
+/// Страница каталога объектов размещения с поиском, фильтрацией и возможностью бронирования
+/// </summary>
 public partial class CatalogPage : Page
 {
     private List<Accommodation> _allAccommodations = new();
     private bool _isInitialized = false;
 
-    // Конструктор страницы каталога, загрузка фильтров и списка объектов
+    /// <summary>
+    /// Конструктор страницы каталога, загрузка фильтров и списка объектов
+    /// </summary>
     public CatalogPage()
     {
         InitializeComponent();
         LoadFiltersData();
         RefreshCatalog();
 
-        // Отображение кнопки панели управления для администратора
         BtnAdminPanel.Visibility = SessionContext.IsAdministrator ? Visibility.Visible : Visibility.Collapsed;
         BtnCabinet.Visibility = SessionContext.IsAuthenticated ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    // Загрузка списков городов, типов жилья и категорий номеров для выпадающих списков
+    /// <summary>
+    /// Загрузка списков городов, типов жилья и категорий номеров для выпадающих списков
+    /// </summary>
     private void LoadFiltersData()
     {
         try
         {
             using var db = new BookingDbContext();
 
-            // Загрузка списка городов
             var cities = db.Cities.OrderBy(c => c.CityName).ToList();
             var cityList = new List<string> { "Все города" };
             cityList.AddRange(cities.Select(c => c.CityName));
             CmbCity.ItemsSource = cityList;
             CmbCity.SelectedIndex = 0;
 
-            // Загрузка типов объектов размещения
             var types = db.AccommodationTypes.OrderBy(t => t.TypeName).ToList();
             var typeList = new List<string> { "Все типы жилья" };
             typeList.AddRange(types.Select(t => t.TypeName));
             CmbType.ItemsSource = typeList;
             CmbType.SelectedIndex = 0;
 
-            // Загрузка уникальных категорий номеров из базы
             var categories = new List<string> { "Все категории номеров", "Люкс", "Делюкс", "Стандарт", "Студия", "Апартаменты", "Коттедж" };
             CmbRoomCategory.ItemsSource = categories;
             CmbRoomCategory.SelectedIndex = 0;
@@ -60,7 +63,9 @@ public partial class CatalogPage : Page
         }
     }
 
-    // Обновление полного перечня объектов размещения из базы данных
+    /// <summary>
+    /// Обновление полного перечня объектов размещения из базы данных
+    /// </summary>
     private void RefreshCatalog()
     {
         try
@@ -81,21 +86,26 @@ public partial class CatalogPage : Page
         }
     }
 
-    // Обработчик события изменения любого критерия поиска или фильтрации
+    /// <summary>
+    /// Обработчик события изменения любого критерия поиска или фильтрации
+    /// </summary>
+    /// <param name="sender">Источник события</param>
+    /// <param name="e">Параметры события</param>
     private void FilterChanged(object sender, EventArgs e)
     {
         if (!_isInitialized) return;
         ApplyFilters();
     }
 
-    // Применение выбранных фильтров, текстового поиска и сортировки к списку объектов
+    /// <summary>
+    /// Применение выбранных фильтров, текстового поиска и сортировки к списку объектов
+    /// </summary>
     private void ApplyFilters()
     {
         if (_allAccommodations == null) return;
 
         IEnumerable<Accommodation> filtered = _allAccommodations;
 
-        // Поиск по названию отеля, адресу или городу
         string query = TxtSearch.Text?.Trim().ToLower() ?? "";
         if (!string.IsNullOrEmpty(query))
         {
@@ -105,32 +115,27 @@ public partial class CatalogPage : Page
                 (a.City != null && a.City.CityName.ToLower().Contains(query)));
         }
 
-        // Фильтрация по выбранному городу
         if (CmbCity.SelectedIndex > 0 && CmbCity.SelectedItem is string selectedCity)
         {
             filtered = filtered.Where(a => a.City != null && a.City.CityName == selectedCity);
         }
 
-        // Фильтрация по типу объекта (Отель, Апартаменты и т.д.)
         if (CmbType.SelectedIndex > 0 && CmbType.SelectedItem is string selectedType)
         {
             filtered = filtered.Where(a => a.Type != null && a.Type.TypeName == selectedType);
         }
 
-        // Фильтрация по категории номера (Люкс, Делюкс, Стандарт и др.)
         if (CmbRoomCategory.SelectedIndex > 0 && CmbRoomCategory.SelectedItem is string selectedCategory)
         {
             filtered = filtered.Where(a => a.RoomsNavigation.Any(r => r.RoomType.ToLower().Contains(selectedCategory.ToLower())));
         }
 
-        // Фильтрация по вместимости гостей
         if (CmbGuests.SelectedIndex > 0)
         {
             int minGuests = CmbGuests.SelectedIndex;
             filtered = filtered.Where(a => a.Capacity >= minGuests || a.RoomsNavigation.Any(r => r.Capacity >= minGuests));
         }
 
-        // Сортировка по стоимости или рейтингу
         if (CmbSort.SelectedItem is ComboBoxItem sortItem)
         {
             string sortMode = sortItem.Content.ToString() ?? "";
@@ -148,7 +153,11 @@ public partial class CatalogPage : Page
         TxtCount.Text = $"Найдено объектов размещения: {resultList.Count} из {_allAccommodations.Count}";
     }
 
-    // Сброс всех установленных фильтров к значениям по умолчанию
+    /// <summary>
+    /// Сброс всех установленных фильтров к значениям по умолчанию
+    /// </summary>
+    /// <param name="sender">Кнопка сброса фильтров</param>
+    /// <param name="e">Параметры события</param>
     private void BtnReset_Click(object sender, RoutedEventArgs e)
     {
         _isInitialized = false;
@@ -162,7 +171,11 @@ public partial class CatalogPage : Page
         ApplyFilters();
     }
 
-    // Переход в личный кабинет текущего пользователя
+    /// <summary>
+    /// Переход в личный кабинет текущего пользователя
+    /// </summary>
+    /// <param name="sender">Кнопка «Личный кабинет»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnCabinet_Click(object sender, RoutedEventArgs e)
     {
         if (!SessionContext.IsAuthenticated)
@@ -174,13 +187,21 @@ public partial class CatalogPage : Page
         NavigationService.Navigate(new UserCabinetPage());
     }
 
-    // Переход в панель управления администратора
+    /// <summary>
+    /// Переход в панель управления администратора
+    /// </summary>
+    /// <param name="sender">Кнопка «Панель администратора»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnAdminPanel_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new AdminHubPage());
     }
 
-    // Открытие окна бронирования выбранного объекта с выбором номеров и дат
+    /// <summary>
+    /// Открытие окна бронирования выбранного объекта с выбором номеров и дат
+    /// </summary>
+    /// <param name="sender">Кнопка «Забронировать»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnBook_Click(object sender, RoutedEventArgs e)
     {
         if (!SessionContext.IsAuthenticated)

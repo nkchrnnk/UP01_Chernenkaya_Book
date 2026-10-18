@@ -7,10 +7,17 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
+/// <summary>
+/// Страница добавления и редактирования номера отеля
+/// </summary>
 public partial class AddEditRoomPage : Page
 {
     private readonly Room? _currentRoom;
 
+    /// <summary>
+    /// Конструктор страницы: принимает номер для редактирования либо null для добавления нового
+    /// </summary>
+    /// <param name="room">Редактируемый номер или null для добавления нового</param>
     public AddEditRoomPage(Room? room)
     {
         InitializeComponent();
@@ -40,6 +47,9 @@ public partial class AddEditRoomPage : Page
         }
     }
 
+    /// <summary>
+    /// Загрузка перечня отелей для выпадающего списка привязки номера
+    /// </summary>
     private void LoadHotels()
     {
         try
@@ -54,6 +64,11 @@ public partial class AddEditRoomPage : Page
         }
     }
 
+    /// <summary>
+    /// Валидация полей комнаты и сохранение изменений в базу данных
+    /// </summary>
+    /// <param name="sender">Кнопка «Сохранить»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnSave_Click(object sender, RoutedEventArgs e)
     {
         if (CmbHotel.SelectedValue == null)
@@ -139,6 +154,11 @@ public partial class AddEditRoomPage : Page
         }
     }
 
+    /// <summary>
+    /// Возврат в таблицу номерного фонда без сохранения
+    /// </summary>
+    /// <param name="sender">Кнопка «Отмена»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new RoomsTabPage());

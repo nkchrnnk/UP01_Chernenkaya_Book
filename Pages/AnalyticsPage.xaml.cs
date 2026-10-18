@@ -20,8 +20,14 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
+/// <summary>
+/// Страница аналитики, визуализации диаграмм и экспорта отчетов в Word, Excel и PDF
+/// </summary>
 public partial class AnalyticsPage : System.Windows.Controls.Page
 {
+    /// <summary>
+    /// Статическая регистрация шрифтового резолвера для поддержки кириллицы при формировании PDF-файлов
+    /// </summary>
     static AnalyticsPage()
     {
         try
@@ -37,13 +43,20 @@ public partial class AnalyticsPage : System.Windows.Controls.Page
         }
     }
 
+    /// <summary>
+    /// Конструктор страницы аналитики и первоначальное построение диаграммы
+    /// </summary>
     public AnalyticsPage()
     {
         InitializeComponent();
         UpdateChart(null, null);
     }
 
-    // Шаг 12: Построение графиков и диаграмм через LiveCharts
+    /// <summary>
+    /// Построение графиков и диаграмм (столбчатых, линейных, круговых) на основе показателей бронирований и выручки через LiveCharts
+    /// </summary>
+    /// <param name="sender">Источник события изменения фильтра</param>
+    /// <param name="e">Параметры выбора</param>
     private void UpdateChart(object? sender, SelectionChangedEventArgs? e)
     {
         if (CmbMetric == null || CmbChartType == null || CartesianChartControl == null || PieChartControl == null)
@@ -163,7 +176,11 @@ public partial class AnalyticsPage : System.Windows.Controls.Page
         }
     }
 
-    // Шаг 13: Выгрузка в Microsoft Word (.docx)
+    /// <summary>
+    /// Формирование аналитического отчета по объектам и выручке в формате документа Microsoft Word (.docx)
+    /// </summary>
+    /// <param name="sender">Кнопка «Экспорт в Word»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnExportWord_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -291,6 +308,12 @@ public partial class AnalyticsPage : System.Windows.Controls.Page
         }
     }
 
+    /// <summary>
+    /// Вспомогательный метод формирования стилизованной ячейки таблицы для Word-документа
+    /// </summary>
+    /// <param name="text">Текст ячейки</param>
+    /// <param name="isHeader">Флаг заголовка</param>
+    /// <returns>Ячейка таблицы OpenXml</returns>
     private DocumentFormat.OpenXml.Wordprocessing.TableCell CreateWordCell(string text, bool isHeader)
     {
         var run = new DocumentFormat.OpenXml.Wordprocessing.Run(new DocumentFormat.OpenXml.Wordprocessing.Text(text));
@@ -321,7 +344,11 @@ public partial class AnalyticsPage : System.Windows.Controls.Page
         return cell;
     }
 
-    // Шаг 14: Выгрузка в Microsoft Excel (.xlsx) с формулами SUM
+    /// <summary>
+    /// Экспорт сводной аналитики и журнала бронирований в книгу Microsoft Excel (.xlsx) с формулами суммы
+    /// </summary>
+    /// <param name="sender">Кнопка «Экспорт в Excel»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnExportExcel_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -462,7 +489,11 @@ public partial class AnalyticsPage : System.Windows.Controls.Page
         }
     }
 
-    // Шаг 15: Выгрузка аналитического отчета в PDF (.pdf) через PdfSharpCore
+    /// <summary>
+    /// Экспорт официального сводного аналитического отчета в формате PDF через PdfSharpCore
+    /// </summary>
+    /// <param name="sender">Кнопка «Экспорт в PDF»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnExportPdf_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -715,6 +746,11 @@ public partial class AnalyticsPage : System.Windows.Controls.Page
         }
     }
 
+    /// <summary>
+    /// Возврат на предыдущую страницу или в главное меню панели администратора
+    /// </summary>
+    /// <param name="sender">Кнопка «Назад»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnBack_Click(object sender, RoutedEventArgs e)
     {
         if (NavigationService.CanGoBack)

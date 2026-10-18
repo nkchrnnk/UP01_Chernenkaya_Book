@@ -8,6 +8,9 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
+/// <summary>
+/// Окно оформления заявки на бронирование объекта размещения
+/// </summary>
 public partial class BookingWindow : Window
 {
     private readonly Accommodation _accommodation;
@@ -15,7 +18,10 @@ public partial class BookingWindow : Window
     private List<Service> _services = new();
     private readonly List<CheckBox> _serviceBoxes = new();
 
-    // Конструктор окна бронирования, привязка объекта размещения и загрузка данных
+    /// <summary>
+    /// Конструктор окна бронирования, привязка объекта размещения и загрузка данных
+    /// </summary>
+    /// <param name="accommodation">Выбранный объект размещения</param>
     public BookingWindow(Accommodation accommodation)
     {
         InitializeComponent();
@@ -24,7 +30,6 @@ public partial class BookingWindow : Window
         TxtHotelName.Text = _accommodation.Name;
         TxtHotelAddress.Text = $"📍 {_accommodation.City?.CityName ?? "Город не указан"}, {_accommodation.Address}";
 
-        // Устанавливаем стандартные даты: заезд завтра, выезд через 3 дня
         DpCheckIn.SelectedDate = DateTime.Today.AddDays(1);
         DpCheckOut.SelectedDate = DateTime.Today.AddDays(4);
 
@@ -32,20 +37,20 @@ public partial class BookingWindow : Window
         CalculateTotal();
     }
 
-    // Загрузка доступных номеров отеля и списка дополнительных услуг из базы данных
+    /// <summary>
+    /// Загрузка доступных номеров отеля и списка дополнительных услуг из базы данных
+    /// </summary>
     private void LoadRoomsAndServices()
     {
         try
         {
             using var db = new BookingDbContext();
 
-            // Загружаем список номеров текущего отеля
             _rooms = db.Rooms
                 .Where(r => r.AccommodationId == _accommodation.AccommodationId && r.IsAvailable == true)
                 .OrderBy(r => r.PricePerNight)
                 .ToList();
 
-            // Если список пуст, создаем базовый стандартный номер
             if (_rooms.Count == 0)
             {
                 var fallbackRoom = new Room
@@ -67,7 +72,6 @@ public partial class BookingWindow : Window
                 $"{r.RoomType} (№{r.RoomNumber}, этаж {r.Floor}, до {r.Capacity} гостей) — {r.PricePerNight:N0} ₽/сутки").ToList();
             CmbRooms.SelectedIndex = 0;
 
-            // Загружаем список платных сервисов
             _services = db.Services.OrderBy(s => s.Price).ToList();
             PanelServices.Children.Clear();
             _serviceBoxes.Clear();
@@ -92,7 +96,9 @@ public partial class BookingWindow : Window
         }
     }
 
-    // Пересчет итоговой стоимости проживания и выбранных дополнительных услуг
+    /// <summary>
+    /// Пересчет итоговой стоимости проживания и выбранных дополнительных услуг
+    /// </summary>
     private void CalculateTotal()
     {
         if (CmbRooms.SelectedIndex < 0 || CmbRooms.SelectedIndex >= _rooms.Count) return;
@@ -124,19 +130,31 @@ public partial class BookingWindow : Window
         TxtTotalCost.Text = $"ИТОГО К ОПЛАТЕ: {total:N0} ₽";
     }
 
-    // Обработчик изменения дат проживания в календарях
+    /// <summary>
+    /// Обработчик изменения дат проживания в календарях
+    /// </summary>
+    /// <param name="sender">Календарь выбора даты</param>
+    /// <param name="e">Параметры выбора даты</param>
     private void Dates_SelectedDateChanged(object? sender, SelectionChangedEventArgs e)
     {
         CalculateTotal();
     }
 
-    // Обработчик выбора категории и номера
+    /// <summary>
+    /// Обработчик выбора категории и номера
+    /// </summary>
+    /// <param name="sender">Выпадающий список номеров</param>
+    /// <param name="e">Параметры выбора</param>
     private void CmbRooms_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         CalculateTotal();
     }
 
-    // Проверка условий бронирования и отправка новой заявки в базу данных
+    /// <summary>
+    /// Проверка условий бронирования и отправка новой заявки в базу данных
+    /// </summary>
+    /// <param name="sender">Кнопка «Забронировать»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnSubmit_Click(object sender, RoutedEventArgs e)
     {
         if (!SessionContext.IsAuthenticated)
@@ -184,7 +202,6 @@ public partial class BookingWindow : Window
         {
             using var db = new BookingDbContext();
 
-            // Ищем или создаем первичный статус "На рассмотрении"
             var status = db.BookingStatuses.FirstOrDefault(s => s.StatusName == "На рассмотрении")
                          ?? db.BookingStatuses.FirstOrDefault(s => s.StatusName == "Ожидает оплаты")
                          ?? db.BookingStatuses.FirstOrDefault();
@@ -211,7 +228,6 @@ public partial class BookingWindow : Window
             db.Bookings.Add(newBooking);
             db.SaveChanges();
 
-            // Привязываем выбранные дополнительные услуги к бронированию
             foreach (var cb in _serviceBoxes)
             {
                 if (cb.IsChecked == true && cb.Tag is Service s)
@@ -246,7 +262,11 @@ public partial class BookingWindow : Window
         }
     }
 
-    // Закрытие окна без сохранения заявки
+    /// <summary>
+    /// Закрытие окна без сохранения заявки
+    /// </summary>
+    /// <param name="sender">Кнопка «Отмена»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
     {
         DialogResult = false;

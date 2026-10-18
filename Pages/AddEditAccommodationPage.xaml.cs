@@ -7,10 +7,17 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
+/// <summary>
+/// Страница добавления и редактирования объекта размещения
+/// </summary>
 public partial class AddEditAccommodationPage : Page
 {
     private readonly Accommodation? _currentAccommodation;
 
+    /// <summary>
+    /// Конструктор страницы: принимает объект для редактирования либо null для создания нового
+    /// </summary>
+    /// <param name="accommodation">Редактируемый объект размещения или null при создании нового</param>
     public AddEditAccommodationPage(Accommodation? accommodation)
     {
         InitializeComponent();
@@ -43,6 +50,9 @@ public partial class AddEditAccommodationPage : Page
         }
     }
 
+    /// <summary>
+    /// Загрузка списков типов размещения и городов для селекторов
+    /// </summary>
     private void LoadReferenceData()
     {
         try
@@ -60,6 +70,11 @@ public partial class AddEditAccommodationPage : Page
         }
     }
 
+    /// <summary>
+    /// Проверка корректности введенных значений и сохранение объекта в базу данных
+    /// </summary>
+    /// <param name="sender">Кнопка «Сохранить»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnSave_Click(object sender, RoutedEventArgs e)
     {
         string name = TxtName.Text.Trim();
@@ -109,7 +124,6 @@ public partial class AddEditAccommodationPage : Page
 
             if (_currentAccommodation == null)
             {
-                // Добавление
                 var newAcc = new Accommodation
                 {
                     Name = name,
@@ -130,7 +144,6 @@ public partial class AddEditAccommodationPage : Page
             }
             else
             {
-                // Редактирование
                 var existing = db.Accommodations.Find(_currentAccommodation.AccommodationId);
                 if (existing != null)
                 {
@@ -158,6 +171,11 @@ public partial class AddEditAccommodationPage : Page
         }
     }
 
+    /// <summary>
+    /// Отмена редактирования и возврат к таблице объектов
+    /// </summary>
+    /// <param name="sender">Кнопка «Отмена»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new AccommodationsTabPage());

@@ -8,11 +8,17 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
+/// <summary>
+/// Страница управления номерным фондом объектов размещения
+/// </summary>
 public partial class RoomsTabPage : Page
 {
     private List<Room> _allRooms = new();
     private bool _isInitialized = false;
 
+    /// <summary>
+    /// Конструктор страницы управления номерным фондом
+    /// </summary>
     public RoomsTabPage()
     {
         InitializeComponent();
@@ -20,6 +26,9 @@ public partial class RoomsTabPage : Page
         LoadRooms();
     }
 
+    /// <summary>
+    /// Загрузка перечня отелей для выпадающего списка фильтрации
+    /// </summary>
     private void LoadFilterData()
     {
         try
@@ -40,6 +49,9 @@ public partial class RoomsTabPage : Page
         }
     }
 
+    /// <summary>
+    /// Загрузка всех комнат с включением данных об отеле
+    /// </summary>
     private void LoadRooms()
     {
         try
@@ -59,12 +71,20 @@ public partial class RoomsTabPage : Page
         }
     }
 
+    /// <summary>
+    /// Обработчик изменения строки поиска или выбранного отеля
+    /// </summary>
+    /// <param name="sender">Источник события</param>
+    /// <param name="e">Параметры события</param>
     private void FilterChanged(object sender, EventArgs e)
     {
         if (!_isInitialized) return;
         ApplyFilters();
     }
 
+    /// <summary>
+    /// Применение критериев поиска по номеру комнаты, категории и названию отеля
+    /// </summary>
     private void ApplyFilters()
     {
         if (_allRooms == null) return;
@@ -90,11 +110,21 @@ public partial class RoomsTabPage : Page
         TxtStatus.Text = $"Отображено номеров: {result.Count} из {_allRooms.Count}";
     }
 
+    /// <summary>
+    /// Переход к форме создания нового номера
+    /// </summary>
+    /// <param name="sender">Кнопка «Добавить номер»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnAddRoom_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new AddEditRoomPage(null));
     }
 
+    /// <summary>
+    /// Переход к форме редактирования выбранного номера
+    /// </summary>
+    /// <param name="sender">Кнопка «Изменить»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnEdit_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is Room room)
@@ -103,6 +133,11 @@ public partial class RoomsTabPage : Page
         }
     }
 
+    /// <summary>
+    /// Удаление номера из базы данных с подтверждением
+    /// </summary>
+    /// <param name="sender">Кнопка «Удалить»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnDelete_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is Room room)
@@ -135,6 +170,11 @@ public partial class RoomsTabPage : Page
         }
     }
 
+    /// <summary>
+    /// Возврат в панель администратора
+    /// </summary>
+    /// <param name="sender">Кнопка «Назад»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnBackToHub_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new AdminHubPage());

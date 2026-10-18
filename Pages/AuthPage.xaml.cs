@@ -8,20 +8,29 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
+/// <summary>
+/// Страница авторизации пользователей: ввод логина и пароля, проверка капчи и разделение ролей
+/// </summary>
 public partial class AuthPage : Page
 {
     private int _failedAttempts = 0;
     private string _currentCaptcha = string.Empty;
     private readonly Random _random = new();
 
+    /// <summary>
+    /// Инициализация формы авторизации и установка перехватчика для блокировки копирования капчи
+    /// </summary>
     public AuthPage()
     {
         InitializeComponent();
-
-        // Шаг 5: Запрет копирования, вырезания и вставки капчи
         CommandManager.AddPreviewExecutedHandler(TxtCaptchaInput, OnCaptchaExecuted);
     }
 
+    /// <summary>
+    /// Блокировка системных команд копирования, вырезания и вставки в поле ввода капчи
+    /// </summary>
+    /// <param name="sender">Источник события</param>
+    /// <param name="e">Параметры выполнения команды</param>
     private void OnCaptchaExecuted(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Command == ApplicationCommands.Copy ||
@@ -32,6 +41,9 @@ public partial class AuthPage : Page
         }
     }
 
+    /// <summary>
+    /// Генерация случайной 4-значной последовательности символов для проверки капчи
+    /// </summary>
     private void GenerateCaptcha()
     {
         const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -40,6 +52,11 @@ public partial class AuthPage : Page
         TxtCaptchaInput.Text = string.Empty;
     }
 
+    /// <summary>
+    /// Аутентификация пользователя, проверка хеша пароля и перенаправление в зависимости от роли
+    /// </summary>
+    /// <param name="sender">Кнопка «Войти»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnSignIn_Click(object sender, RoutedEventArgs e)
     {
         string login = TxtLogin.Text.Trim();
@@ -51,7 +68,6 @@ public partial class AuthPage : Page
             return;
         }
 
-        // Шаг 5: Проверка капчи при 3 и более неудачных попытках
         if (_failedAttempts >= 3)
         {
             if (string.IsNullOrWhiteSpace(TxtCaptchaInput.Text) ||
@@ -70,7 +86,6 @@ public partial class AuthPage : Page
 
             if (user != null && PasswordSecurity.VerifyPassword(password, user.Password))
             {
-                // Успешный вход
                 SessionContext.ActiveUser = user;
                 _failedAttempts = 0;
 
@@ -106,17 +121,32 @@ public partial class AuthPage : Page
         }
     }
 
+    /// <summary>
+    /// Вход в систему под гостевым профилем без авторизации
+    /// </summary>
+    /// <param name="sender">Кнопка «Войти как гость»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnGuest_Click(object sender, RoutedEventArgs e)
     {
         SessionContext.SignOut();
         NavigationService.Navigate(new CatalogPage());
     }
 
+    /// <summary>
+    /// Переход на страницу регистрации нового пользователя
+    /// </summary>
+    /// <param name="sender">Кнопка «Регистрация»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnRegister_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new RegisterPage());
     }
 
+    /// <summary>
+    /// Переход на страницу изменения пароля
+    /// </summary>
+    /// <param name="sender">Кнопка смены пароля</param>
+    /// <param name="e">Параметры события</param>
     private void BtnChangePassword_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new ChangePasswordPage());

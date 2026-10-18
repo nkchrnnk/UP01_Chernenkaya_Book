@@ -8,12 +8,17 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
+/// <summary>
+/// Страница управления журналом бронирований для администратора
+/// </summary>
 public partial class BookingsTabPage : Page
 {
     private List<Booking> _allBookings = new();
     private bool _isInitialized = false;
 
-    // Конструктор страницы управления бронированиями в панели администратора
+    /// <summary>
+    /// Конструктор страницы управления бронированиями в панели администратора
+    /// </summary>
     public BookingsTabPage()
     {
         InitializeComponent();
@@ -21,7 +26,9 @@ public partial class BookingsTabPage : Page
         LoadBookings();
     }
 
-    // Загрузка доступных статусов для фильтрации списка заявок
+    /// <summary>
+    /// Загрузка доступных статусов для фильтрации списка заявок
+    /// </summary>
     private void LoadFilterData()
     {
         try
@@ -42,7 +49,9 @@ public partial class BookingsTabPage : Page
         }
     }
 
-    // Загрузка всех бронирований с подгрузкой связанных сущностей отелей, комнат и клиентов
+    /// <summary>
+    /// Загрузка всех бронирований с подгрузкой связанных сущностей отелей, комнат и клиентов
+    /// </summary>
     private void LoadBookings()
     {
         try
@@ -63,14 +72,20 @@ public partial class BookingsTabPage : Page
         }
     }
 
-    // Обработчик изменения строки поиска или выбранного статуса
+    /// <summary>
+    /// Обработчик изменения строки поиска или выбранного статуса
+    /// </summary>
+    /// <param name="sender">Источник события</param>
+    /// <param name="e">Параметры события</param>
     private void FilterChanged(object sender, EventArgs e)
     {
         if (!_isInitialized) return;
         ApplyFilters();
     }
 
-    // Применение текстовой фильтрации и фильтра по статусу к таблице бронирований
+    /// <summary>
+    /// Применение текстовой фильтрации и фильтра по статусу к таблице бронирований
+    /// </summary>
     private void ApplyFilters()
     {
         if (_allBookings == null) return;
@@ -97,7 +112,11 @@ public partial class BookingsTabPage : Page
         TxtStatus.Text = $"Отображено бронирований: {result.Count} из {_allBookings.Count}";
     }
 
-    // Одобрение заявки администратором: перевод в статус «Ожидает оплаты» для выставления счета гостю
+    /// <summary>
+    /// Одобрение заявки администратором: перевод в статус «Ожидает оплаты» для выставления счета гостю
+    /// </summary>
+    /// <param name="sender">Кнопка «Одобрить заявку»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnApprove_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is Booking booking)
@@ -123,7 +142,11 @@ public partial class BookingsTabPage : Page
         }
     }
 
-    // Перевод бронирования в статус «Подтверждено»
+    /// <summary>
+    /// Перевод бронирования в статус «Подтверждено»
+    /// </summary>
+    /// <param name="sender">Кнопка «Подтвердить»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnConfirm_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is Booking booking)
@@ -149,7 +172,11 @@ public partial class BookingsTabPage : Page
         }
     }
 
-    // Перевод бронирования в статус «Отменено»
+    /// <summary>
+    /// Перевод бронирования в статус «Отменено»
+    /// </summary>
+    /// <param name="sender">Кнопка «Отменить»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnCancelBooking_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is Booking booking)
@@ -184,7 +211,11 @@ public partial class BookingsTabPage : Page
         }
     }
 
-    // Полное каскадное удаление бронирования и связанных услуг и платежей из базы данных
+    /// <summary>
+    /// Полное каскадное удаление бронирования и связанных услуг и платежей из базы данных
+    /// </summary>
+    /// <param name="sender">Кнопка «Удалить»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnDeleteBooking_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is Booking booking)
@@ -220,7 +251,11 @@ public partial class BookingsTabPage : Page
         }
     }
 
-    // Возврат в панель управления администратора
+    /// <summary>
+    /// Возврат в панель управления администратора
+    /// </summary>
+    /// <param name="sender">Кнопка «Назад»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnBackToHub_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new AdminHubPage());

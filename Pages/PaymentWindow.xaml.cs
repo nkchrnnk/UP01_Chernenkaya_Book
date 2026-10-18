@@ -7,13 +7,19 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
+/// <summary>
+/// Окно оплаты бронирования с выбором платежного метода
+/// </summary>
 public partial class PaymentWindow : Window
 {
     private readonly int _bookingId;
     private Booking? _booking;
     private decimal _totalAmount = 0;
 
-    // Конструктор окна оплаты бронирования, загрузка данных счета
+    /// <summary>
+    /// Конструктор окна оплаты бронирования, загрузка данных счета
+    /// </summary>
+    /// <param name="bookingId">Идентификатор бронирования</param>
     public PaymentWindow(int bookingId)
     {
         InitializeComponent();
@@ -21,7 +27,9 @@ public partial class PaymentWindow : Window
         LoadBookingBill();
     }
 
-    // Загрузка информации о бронировании, номерах, услугах и расчет общей суммы к оплате
+    /// <summary>
+    /// Загрузка информации о бронировании, номерах, услугах и расчет общей суммы к оплате
+    /// </summary>
     private void LoadBookingBill()
     {
         try
@@ -66,7 +74,11 @@ public partial class PaymentWindow : Window
         }
     }
 
-    // Переключение видимости полей ввода в зависимости от выбранного способа оплаты
+    /// <summary>
+    /// Переключение видимости полей ввода в зависимости от выбранного способа оплаты
+    /// </summary>
+    /// <param name="sender">Выпадающий список методов оплаты</param>
+    /// <param name="e">Параметры выбора</param>
     private void CmbMethod_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (PanelCard == null || PanelSbp == null || PanelCash == null) return;
@@ -89,7 +101,11 @@ public partial class PaymentWindow : Window
         }
     }
 
-    // Проверка платежных реквизитов, регистрация платежа в базе и обновление статуса брони
+    /// <summary>
+    /// Проверка платежных реквизитов, регистрация платежа в базе и обновление статуса брони
+    /// </summary>
+    /// <param name="sender">Кнопка «Оплатить»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnPay_Click(object sender, RoutedEventArgs e)
     {
         if (_booking == null) return;
@@ -102,7 +118,6 @@ public partial class PaymentWindow : Window
             else if (content.Contains("Наличные")) methodName = "Наличные при заезде";
         }
 
-        // Простая валидация при оплате картой
         if (methodName == "Банковская карта")
         {
             if (string.IsNullOrWhiteSpace(TxtCardNumber.Text) || TxtCardNumber.Text.Length < 16)
@@ -124,7 +139,6 @@ public partial class PaymentWindow : Window
         {
             using var db = new BookingDbContext();
 
-            // Создаем запись платежа
             var payment = new Payment
             {
                 BookingId = _bookingId,
@@ -136,7 +150,6 @@ public partial class PaymentWindow : Window
 
             db.Payments.Add(payment);
 
-            // Меняем статус брони на "Подтверждено"
             var entity = db.Bookings.Find(_bookingId);
             if (entity != null)
             {
@@ -168,7 +181,11 @@ public partial class PaymentWindow : Window
         }
     }
 
-    // Закрытие окна без проведения платежа
+    /// <summary>
+    /// Закрытие окна без проведения платежа
+    /// </summary>
+    /// <param name="sender">Кнопка «Отмена»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
     {
         DialogResult = false;

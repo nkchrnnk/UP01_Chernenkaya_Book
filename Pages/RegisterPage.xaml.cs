@@ -8,17 +8,26 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
+/// <summary>
+/// Страница регистрации нового пользователя системы бронирования
+/// </summary>
 public partial class RegisterPage : Page
 {
     private bool _isFormattingPhone = false;
 
-    // Инициализация компонентов формы регистрации
+    /// <summary>
+    /// Инициализация компонентов формы регистрации
+    /// </summary>
     public RegisterPage()
     {
         InitializeComponent();
     }
 
-    // Форматирование телефонного номера по маске +7 (999) 999-99-99 в реальном времени
+    /// <summary>
+    /// Форматирование телефонного номера по маске +7 (999) 999-99-99 в реальном времени
+    /// </summary>
+    /// <param name="sender">Поле ввода телефона</param>
+    /// <param name="e">Параметры изменения текста</param>
     private void TxtPhone_TextChanged(object sender, TextChangedEventArgs e)
     {
         if (_isFormattingPhone) return;
@@ -28,13 +37,11 @@ public partial class RegisterPage : Page
         {
             string digits = new string(TxtPhone.Text.Where(char.IsDigit).ToArray());
 
-            // Убираем первую 7 или 8 при вводе полного номера
             if (digits.StartsWith("7") || digits.StartsWith("8"))
             {
                 digits = digits.Substring(1);
             }
 
-            // Не более 10 цифр после кода страны +7
             if (digits.Length > 10)
             {
                 digits = digits.Substring(0, 10);
@@ -46,7 +53,6 @@ public partial class RegisterPage : Page
                 return;
             }
 
-            // Наложение маски +7 (999) 999-99-99
             var formatted = new StringBuilder("+7 (");
             for (int i = 0; i < digits.Length; i++)
             {
@@ -65,7 +71,11 @@ public partial class RegisterPage : Page
         }
     }
 
-    // Проверка заполнения полей, валидация пароля и добавление новой учетной записи гостя
+    /// <summary>
+    /// Проверка заполнения полей, валидация пароля и добавление новой учетной записи гостя
+    /// </summary>
+    /// <param name="sender">Кнопка «Зарегистрироваться»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnSubmitRegister_Click(object sender, RoutedEventArgs e)
     {
         string fio = TxtFio.Text.Trim();
@@ -75,7 +85,6 @@ public partial class RegisterPage : Page
         string password = PbPassword.Password;
         string confirmPassword = PbPasswordConfirm.Password;
 
-        // Проверяем обязательность заполнения всех полей анкеты
         if (string.IsNullOrWhiteSpace(fio) ||
             string.IsNullOrWhiteSpace(login) ||
             string.IsNullOrWhiteSpace(email) ||
@@ -87,28 +96,24 @@ public partial class RegisterPage : Page
             return;
         }
 
-        // Проверяем совпадение введенного пароля и его подтверждения
         if (password != confirmPassword)
         {
             MessageBox.Show("Введенные пароли не совпадают!", "Ошибка валидации", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
-        // Проверка надежности пароля: длина от 6 символов, наличие цифр и букв
         if (password.Length < 6 || !password.Any(char.IsDigit) || !password.Any(char.IsLetter))
         {
             MessageBox.Show("Пароль должен содержать не менее 6 символов, включая цифры и латинские буквы.", "Слабый пароль", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
-        // Проверка корректности формата введенного email
         if (!email.Contains('@') || !email.Contains('.'))
         {
             MessageBox.Show("Укажите корректный адрес электронной почты (например, name@mail.ru).", "Неверный формат email", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
-        // Проверка полноты номера телефона по маске
         string digitsOnly = new string(phone.Where(char.IsDigit).ToArray());
         if (digitsOnly.Length < 11)
         {
@@ -120,14 +125,12 @@ public partial class RegisterPage : Page
         {
             using var db = new BookingDbContext();
 
-            // Проверка логина на уникальность
             if (db.Users.Any(u => u.Login.ToLower() == login.ToLower()))
             {
                 MessageBox.Show($"Пользователь с логином «{login}» уже зарегистрирован. Пожалуйста, выберите другой логин.", "Логин занят", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // Хеширование пароля алгоритмом SHA-1 перед сохранением
             string passwordHash = PasswordSecurity.ComputeSha1(password);
 
             var newUser = new User
@@ -152,7 +155,11 @@ public partial class RegisterPage : Page
         }
     }
 
-    // Возврат на экран авторизации
+    /// <summary>
+    /// Возврат на экран авторизации
+    /// </summary>
+    /// <param name="sender">Кнопка «Назад»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnBackToLogin_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new AuthPage());

@@ -7,8 +7,14 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
+/// <summary>
+/// Страница смены пароля пользователя
+/// </summary>
 public partial class ChangePasswordPage : Page
 {
+    /// <summary>
+    /// Инициализация формы смены пароля и подстановка логина активного пользователя
+    /// </summary>
     public ChangePasswordPage()
     {
         InitializeComponent();
@@ -20,6 +26,11 @@ public partial class ChangePasswordPage : Page
         }
     }
 
+    /// <summary>
+    /// Проверка старого пароля, валидация надежности нового пароля и запись нового SHA-1 хеша
+    /// </summary>
+    /// <param name="sender">Кнопка «Сменить пароль»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnSubmitChangePassword_Click(object sender, RoutedEventArgs e)
     {
         string login = TxtLogin.Text.Trim();
@@ -65,7 +76,6 @@ public partial class ChangePasswordPage : Page
                 return;
             }
 
-            // Шаг 11: Обновление хеша пароля
             user.Password = PasswordSecurity.ComputeSha1(newPassword);
             db.SaveChanges();
 
@@ -86,6 +96,11 @@ public partial class ChangePasswordPage : Page
         }
     }
 
+    /// <summary>
+    /// Возврат на предыдущую страницу
+    /// </summary>
+    /// <param name="sender">Кнопка «Назад»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnBack_Click(object sender, RoutedEventArgs e)
     {
         if (NavigationService.CanGoBack)

@@ -8,11 +8,16 @@ using UP01_Chernenkaya_Book.Pages;
 
 namespace UP01_Chernenkaya_Book;
 
+/// <summary>
+/// Главное окно приложения: контейнер навигации, таймер времени, управление сессией и темами
+/// </summary>
 public partial class MainWindow : Window
 {
     private readonly DispatcherTimer _clockTimer;
 
-    // Конструктор главного окна приложения, запуск часов и переход на страницу входа
+    /// <summary>
+    /// Конструктор главного окна приложения, запуск часов и переход на страницу входа
+    /// </summary>
     public MainWindow()
     {
         InitializeComponent();
@@ -28,13 +33,21 @@ public partial class MainWindow : Window
         MainFrame.Navigate(new AuthPage());
     }
 
-    // Обработчик тика таймера для отображения актуального времени в подвале
+    /// <summary>
+    /// Обработчик тика таймера для отображения актуального времени в подвале
+    /// </summary>
+    /// <param name="sender">Источник события таймера</param>
+    /// <param name="e">Параметры события</param>
     private void ClockTimer_Tick(object? sender, EventArgs e)
     {
         TxtClock.Text = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
     }
 
-    // Обновление состояния элементов интерфейса шапки при смене страниц
+    /// <summary>
+    /// Обновление состояния элементов интерфейса шапки при смене страниц
+    /// </summary>
+    /// <param name="sender">Источник события навигации</param>
+    /// <param name="e">Параметры навигации</param>
     private void MainFrame_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
     {
         bool isAuthPage = e.Content is AuthPage;
@@ -54,7 +67,11 @@ public partial class MainWindow : Window
         }
     }
 
-    // Возврат на предыдущую посещенную страницу
+    /// <summary>
+    /// Возврат на предыдущую посещенную страницу
+    /// </summary>
+    /// <param name="sender">Кнопка «Назад»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnBack_Click(object sender, RoutedEventArgs e)
     {
         if (MainFrame.CanGoBack)
@@ -63,7 +80,11 @@ public partial class MainWindow : Window
         }
     }
 
-    // Быстрый переход в личный кабинет авторизованного пользователя
+    /// <summary>
+    /// Быстрый переход в личный кабинет авторизованного пользователя
+    /// </summary>
+    /// <param name="sender">Кнопка «Личный кабинет»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnCabinet_Click(object sender, RoutedEventArgs e)
     {
         if (SessionContext.IsAuthenticated)
@@ -72,14 +93,22 @@ public partial class MainWindow : Window
         }
     }
 
-    // Завершение текущего пользовательского сеанса и возврат на форму авторизации
+    /// <summary>
+    /// Завершение текущего пользовательского сеанса и возврат на форму авторизации
+    /// </summary>
+    /// <param name="sender">Кнопка «Выйти»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnLogout_Click(object sender, RoutedEventArgs e)
     {
         SessionContext.SignOut();
         MainFrame.Navigate(new AuthPage());
     }
 
-    // Динамическая смена темы оформления (фирменная или альтернативная темная)
+    /// <summary>
+    /// Динамическая смена темы оформления (фирменная или альтернативная темная)
+    /// </summary>
+    /// <param name="sender">Выпадающий список тем</param>
+    /// <param name="e">Параметры выбора</param>
     private void CmbTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (CmbTheme.SelectedItem is ComboBoxItem selectedItem)
@@ -104,7 +133,11 @@ public partial class MainWindow : Window
         }
     }
 
-    // Подтверждение намерения пользователя закрыть программу
+    /// <summary>
+    /// Подтверждение намерения пользователя закрыть программу
+    /// </summary>
+    /// <param name="sender">Окно приложения</param>
+    /// <param name="e">Параметры события закрытия</param>
     private void Window_Closing(object sender, CancelEventArgs e)
     {
         var result = MessageBox.Show(

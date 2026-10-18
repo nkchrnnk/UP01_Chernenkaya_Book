@@ -9,7 +9,9 @@ using UP01_Chernenkaya_Book.Models;
 
 namespace UP01_Chernenkaya_Book.Pages;
 
-// Модель представления для удобного отображения строк бронирований в личном кабинете гостя
+/// <summary>
+/// Модель представления для удобного отображения строк бронирований в личном кабинете гостя
+/// </summary>
 public class UserBookingItem
 {
     public Booking Booking { get; set; } = null!;
@@ -32,11 +34,16 @@ public class UserBookingItem
     public string TotalAmountText => $"{TotalAmount:N0} ₽";
 }
 
+/// <summary>
+/// Страница личного кабинета пользователя для просмотра бронирований и оплаты
+/// </summary>
 public partial class UserCabinetPage : Page
 {
     private List<UserBookingItem> _items = new();
 
-    // Инициализация компонентов личного кабинета пользователя
+    /// <summary>
+    /// Инициализация компонентов личного кабинета пользователя
+    /// </summary>
     public UserCabinetPage()
     {
         InitializeComponent();
@@ -44,7 +51,9 @@ public partial class UserCabinetPage : Page
         LoadUserBookings();
     }
 
-    // Отображение личных данных активного пользователя
+    /// <summary>
+    /// Отображение личных данных активного пользователя
+    /// </summary>
     private void DisplayUserProfile()
     {
         if (SessionContext.ActiveUser != null)
@@ -58,7 +67,9 @@ public partial class UserCabinetPage : Page
         }
     }
 
-    // Загрузка всех бронирований текущего пользователя из базы данных и расчет сумм
+    /// <summary>
+    /// Загрузка всех бронирований текущего пользователя из базы данных и расчет сумм
+    /// </summary>
     private void LoadUserBookings()
     {
         if (!SessionContext.IsAuthenticated)
@@ -125,7 +136,11 @@ public partial class UserCabinetPage : Page
         }
     }
 
-    // Обработчик оплаты счета по выбранному бронированию
+    /// <summary>
+    /// Обработчик оплаты счета по выбранному бронированию
+    /// </summary>
+    /// <param name="sender">Кнопка оплаты</param>
+    /// <param name="e">Параметры события</param>
     private void BtnPayBooking_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is UserBookingItem item)
@@ -138,7 +153,11 @@ public partial class UserCabinetPage : Page
         }
     }
 
-    // Просмотр детализированного счета и квитанции по бронированию
+    /// <summary>
+    /// Просмотр детализированного счета и квитанции по бронированию
+    /// </summary>
+    /// <param name="sender">Кнопка просмотра счета</param>
+    /// <param name="e">Параметры события</param>
     private void BtnViewBill_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is UserBookingItem item)
@@ -176,7 +195,11 @@ public partial class UserCabinetPage : Page
         }
     }
 
-    // Отмена заявки на бронирование
+    /// <summary>
+    /// Отмена заявки на бронирование
+    /// </summary>
+    /// <param name="sender">Кнопка «Отменить»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnCancelBooking_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.DataContext is UserBookingItem item)
@@ -211,13 +234,21 @@ public partial class UserCabinetPage : Page
         }
     }
 
-    // Переход обратно на страницу каталога объектов
+    /// <summary>
+    /// Переход обратно на страницу каталога объектов
+    /// </summary>
+    /// <param name="sender">Кнопка «В каталог»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnCatalog_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new CatalogPage());
     }
 
-    // Переход на страницу изменения пароля
+    /// <summary>
+    /// Переход на страницу изменения пароля
+    /// </summary>
+    /// <param name="sender">Кнопка «Сменить пароль»</param>
+    /// <param name="e">Параметры события</param>
     private void BtnChangePassword_Click(object sender, RoutedEventArgs e)
     {
         NavigationService.Navigate(new ChangePasswordPage());
