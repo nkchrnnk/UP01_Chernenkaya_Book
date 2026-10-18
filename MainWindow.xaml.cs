@@ -12,11 +12,11 @@ public partial class MainWindow : Window
 {
     private readonly DispatcherTimer _clockTimer;
 
+    // Конструктор главного окна приложения, запуск часов и переход на страницу входа
     public MainWindow()
     {
         InitializeComponent();
 
-        // Шаг 2: Таймер даты и времени в правом нижнем углу
         _clockTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(1)
@@ -25,34 +25,36 @@ public partial class MainWindow : Window
         _clockTimer.Start();
         ClockTimer_Tick(null, EventArgs.Empty);
 
-        // Переход на страницу авторизации (Шаг 4)
         MainFrame.Navigate(new AuthPage());
     }
 
+    // Обработчик тика таймера для отображения актуального времени в подвале
     private void ClockTimer_Tick(object? sender, EventArgs e)
     {
         TxtClock.Text = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
     }
 
+    // Обновление состояния элементов интерфейса шапки при смене страниц
     private void MainFrame_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
     {
-        // Кнопка Назад скрыта на странице входа
         bool isAuthPage = e.Content is AuthPage;
         BtnBack.Visibility = (MainFrame.CanGoBack && !isAuthPage) ? Visibility.Visible : Visibility.Collapsed;
 
-        // Отображение текущего пользователя
         if (SessionContext.ActiveUser != null)
         {
             TxtCurrentUser.Text = $"{SessionContext.ActiveUser.Fio} ({SessionContext.ActiveUser.Role})";
             BtnLogout.Visibility = Visibility.Visible;
+            BtnCabinet.Visibility = Visibility.Visible;
         }
         else
         {
             TxtCurrentUser.Text = "Гость";
             BtnLogout.Visibility = Visibility.Collapsed;
+            BtnCabinet.Visibility = Visibility.Collapsed;
         }
     }
 
+    // Возврат на предыдущую посещенную страницу
     private void BtnBack_Click(object sender, RoutedEventArgs e)
     {
         if (MainFrame.CanGoBack)
@@ -61,13 +63,23 @@ public partial class MainWindow : Window
         }
     }
 
+    // Быстрый переход в личный кабинет авторизованного пользователя
+    private void BtnCabinet_Click(object sender, RoutedEventArgs e)
+    {
+        if (SessionContext.IsAuthenticated)
+        {
+            MainFrame.Navigate(new UserCabinetPage());
+        }
+    }
+
+    // Завершение текущего пользовательского сеанса и возврат на форму авторизации
     private void BtnLogout_Click(object sender, RoutedEventArgs e)
     {
         SessionContext.SignOut();
         MainFrame.Navigate(new AuthPage());
     }
 
-    // Шаг 3: Переключение тем оформления
+    // Динамическая смена темы оформления (фирменная или альтернативная темная)
     private void CmbTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (CmbTheme.SelectedItem is ComboBoxItem selectedItem)
@@ -92,7 +104,7 @@ public partial class MainWindow : Window
         }
     }
 
-    // Шаг 2: Подтверждение выхода из приложения
+    // Подтверждение намерения пользователя закрыть программу
     private void Window_Closing(object sender, CancelEventArgs e)
     {
         var result = MessageBox.Show(
