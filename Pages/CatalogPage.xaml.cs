@@ -27,7 +27,7 @@ public partial class CatalogPage : Page
         RefreshCatalog();
 
         BtnAdminPanel.Visibility = SessionContext.IsAdministrator ? Visibility.Visible : Visibility.Collapsed;
-        BtnCabinet.Visibility = SessionContext.IsAuthenticated ? Visibility.Visible : Visibility.Collapsed;
+        BtnCabinet.Visibility = (SessionContext.IsAuthenticated && !SessionContext.IsAdministrator) ? Visibility.Visible : Visibility.Collapsed;
     }
 
     /// <summary>
@@ -178,9 +178,8 @@ public partial class CatalogPage : Page
     /// <param name="e">Параметры события</param>
     private void BtnCabinet_Click(object sender, RoutedEventArgs e)
     {
-        if (!SessionContext.IsAuthenticated)
+        if (!SessionContext.IsAuthenticated || SessionContext.IsAdministrator)
         {
-            NavigationService.Navigate(new AuthPage());
             return;
         }
 

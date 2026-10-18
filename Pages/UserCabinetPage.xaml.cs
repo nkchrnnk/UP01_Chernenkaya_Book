@@ -16,21 +16,25 @@ public class UserBookingItem
 {
     public Booking Booking { get; set; } = null!;
     public int BookingId { get; set; }
-    public Room Room { get; set; } = null!;
+    public Room? Room { get; set; }
     public DateOnly CheckIn { get; set; }
     public DateOnly CheckOut { get; set; }
     public int Guests { get; set; }
-    public BookingStatus Status { get; set; } = null!;
+    public BookingStatus? Status { get; set; }
     public decimal TotalAmount { get; set; }
     public bool IsPaid { get; set; }
 
     public string LocationText { get; set; } = "";
     public string PeriodText { get; set; } = "";
 
-    public bool CanPay => (Booking.Status?.StatusName == "Ожидает оплаты") && !IsPaid;
-    public bool CanCancel => Booking.Status?.StatusName != "Отменено" && Booking.Status?.StatusName != "Завершено";
+    public bool CanPay => (Booking?.Status?.StatusName == "Ожидает оплаты") && !IsPaid;
+    public bool CanCancel => Booking?.Status?.StatusName != "Отменено" && Booking?.Status?.StatusName != "Завершено";
 
-    public string PaymentStatusText => IsPaid ? "✓ Оплачено" : (Booking.Status?.StatusName == "Ожидает оплаты" ? "Ожидает оплаты" : "Счет формируется");
+    public string PaymentStatusText => IsPaid 
+        ? "✓ Оплачено" 
+        : (Booking?.Status?.StatusName == "Ожидает оплаты" 
+            ? "Ожидает оплаты" 
+            : (Booking?.Status?.StatusName == "На рассмотрении" ? "На рассмотрении" : "Счет формируется"));
     public string TotalAmountText => $"{TotalAmount:N0} ₽";
 }
 
@@ -72,9 +76,16 @@ public partial class UserCabinetPage : Page
     /// </summary>
     private void LoadUserBookings()
     {
-        if (!SessionContext.IsAuthenticated)
+        if (!SessionContext.IsAuthenticated || SessionContext.ActiveUser == null)
         {
             TxtStatus.Text = "Для просмотра истории заявок необходимо авторизоваться.";
+            DgUserBookings.ItemsSource = null;
+            return;
+        }
+
+        if (SessionContext.ActiveUser.Role == "Admin")
+        {
+            TxtStatus.Text = "Личный кабинет предназначен для гостей. Управление всеми бронированиями осуществляется в Журнале бронирований.";
             DgUserBookings.ItemsSource = null;
             return;
         }
@@ -82,7 +93,7 @@ public partial class UserCabinetPage : Page
         try
         {
             using var db = new BookingDbContext();
-            int currentUserId = SessionContext.ActiveUser!.UserId;
+            int currentUserId = SessionContext.ActiveUser.UserId;
 
             var bookings = db.Bookings
                 .Where(b => b.UserId == currentUserId)
@@ -108,14 +119,14 @@ public partial class UserCabinetPage : Page
                 {
                     Booking = b,
                     BookingId = b.BookingId,
-                    Room = b.Room!,
+                    Room = b.Room,
                     CheckIn = b.CheckIn,
                     CheckOut = b.CheckOut,
                     Guests = b.Guests,
-                    Status = b.Status!,
+                    Status = b.Status,
                     TotalAmount = total,
                     IsPaid = isPaid,
-                    LocationText = $"{b.Room?.Accommodation?.City?.CityName}, {b.Room?.Accommodation?.Address}",
+                    LocationText = $"{b.Room?.Accommodation?.City?.CityName ?? "Город не указан"}, {b.Room?.Accommodation?.Address ?? "Адрес не указан"}",
                     PeriodText = $"{b.CheckIn:dd.MM.yyyy} — {b.CheckOut:dd.MM.yyyy}"
                 };
             }).ToList();
@@ -123,10 +134,9 @@ public partial class UserCabinetPage : Page
             DgUserBookings.ItemsSource = null;
             DgUserBookings.ItemsSource = _items;
 
-            // Обновление сводных счетчиков
             TxtTotalBookings.Text = _items.Count.ToString();
-            TxtPendingPayment.Text = _items.Count(i => i.Booking.Status?.StatusName == "Ожидает оплаты" && !i.IsPaid).ToString();
-            TxtConfirmedBookings.Text = _items.Count(i => i.IsPaid || i.Booking.Status?.StatusName == "Подтверждено").ToString();
+            TxtPendingPayment.Text = _items.Count(i => i.Booking?.Status?.StatusName == "Ожидает оплаты" && !i.IsPaid).ToString();
+            TxtConfirmedBookings.Text = _items.Count(i => i.IsPaid || i.Booking?.Status?.StatusName == "Подтверждено").ToString();
 
             TxtStatus.Text = $"Всего ваших бронирований: {_items.Count}";
         }

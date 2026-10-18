@@ -57,7 +57,7 @@ public partial class MainWindow : Window
         {
             TxtCurrentUser.Text = $"{SessionContext.ActiveUser.Fio} ({SessionContext.ActiveUser.Role})";
             BtnLogout.Visibility = Visibility.Visible;
-            BtnCabinet.Visibility = Visibility.Visible;
+            BtnCabinet.Visibility = (SessionContext.ActiveUser.Role != "Admin") ? Visibility.Visible : Visibility.Collapsed;
         }
         else
         {
@@ -87,7 +87,7 @@ public partial class MainWindow : Window
     /// <param name="e">Параметры события</param>
     private void BtnCabinet_Click(object sender, RoutedEventArgs e)
     {
-        if (SessionContext.IsAuthenticated)
+        if (SessionContext.IsAuthenticated && SessionContext.ActiveUser?.Role != "Admin")
         {
             MainFrame.Navigate(new UserCabinetPage());
         }

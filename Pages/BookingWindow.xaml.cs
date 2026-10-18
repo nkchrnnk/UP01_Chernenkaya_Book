@@ -202,9 +202,7 @@ public partial class BookingWindow : Window
         {
             using var db = new BookingDbContext();
 
-            var status = db.BookingStatuses.FirstOrDefault(s => s.StatusName == "На рассмотрении")
-                         ?? db.BookingStatuses.FirstOrDefault(s => s.StatusName == "Ожидает оплаты")
-                         ?? db.BookingStatuses.FirstOrDefault();
+            var status = db.BookingStatuses.FirstOrDefault(s => s.StatusName == "На рассмотрении");
 
             if (status == null)
             {
@@ -247,8 +245,8 @@ public partial class BookingWindow : Window
                 $"Ваша заявка №{newBooking.BookingId} на бронирование объекта «{_accommodation.Name}» успешно отправлена!\n\n" +
                 $"• Номер: {selectedRoom.RoomType} (№{selectedRoom.RoomNumber})\n" +
                 $"• Заезд: {newBooking.CheckIn:dd.MM.yyyy}, Выезд: {newBooking.CheckOut:dd.MM.yyyy}\n" +
-                $"• Статус: «{status.StatusName}»\n\n" +
-                $"Администратор проверит бронь и подтвердит её. После подтверждения оплатить счет можно в Личном кабинете.",
+                $"• Статус: «На рассмотрении»\n\n" +
+                $"Администратор проверит бронь и выставит счет. После подтверждения оплатить счет можно в Личном кабинете.",
                 "Заявка принята",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
